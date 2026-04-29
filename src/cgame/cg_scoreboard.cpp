@@ -4,8 +4,13 @@
 
 #define	SCOREBOARD_WIDTH	(31*BIGCHAR_WIDTH)
 
-vec4_t clrUiBack = { 0.f, 0.f, 0.f, .6f };
-vec4_t clrUiBar = { .16f, .2f, .17f, .8f };
+vec4_t clrUiBack = { 0.08f, 0.08f, 0.10f, 0.75f };
+vec4_t clrUiBar = { 0.10f, 0.12f, 0.16f, 0.85f };
+vec4_t clrStatsPanel = { 0.08f, 0.08f, 0.10f, 0.90f };
+vec4_t clrStatsHeader = { 0.45f, 0.65f, 0.95f, 1.0f };
+vec4_t clrStatsText = { 0.85f, 0.85f, 0.90f, 1.0f };
+vec4_t clrAxis = { 0.60f, 0.35f, 0.35f, 1.0f };
+vec4_t clrAllies = { 0.35f, 0.50f, 0.60f, 1.0f };
 
 /*
 =================
@@ -28,7 +33,7 @@ int WM_DrawObjectives( int x, int y, int width, float fade ) {
 	const char *s, *str;
 	int tempy, rows;
 	int msec, mins, seconds, tens; // JPW NERVE
-	vec4_t tclr =	{ 0.6f,		0.6f,		0.6f,		1.0f };
+	vec4_t tclr =	{ 0.55f,	0.55f,	0.60f,	1.0f };
 
 	if ( cg.snap->ps.pm_type == PM_INTERMISSION ) {
 		const char *s, *buf, *shader = NULL, *flagshader = NULL, *nameshader = NULL;
@@ -201,49 +206,22 @@ static void WM_DrawClientScore( int x, int y, score_t *score, float *color, floa
 
 	ci = &cgs.clientinfo[score->client];
 
-    // Highlight background of your slot
+    // Highlight background of your slot â€” single solid rect
 	if ( score->client == cg.snap->ps.clientNum ) {
-		tempx = x;
+		float totalW;
 
-		hcolor[3] = fade * 0.3;
-		VectorSet( hcolor, .5f, .5f, .2f );			// DARK-RED
-
-        // Player box
-		CG_FillRect( tempx - 3, y + 1, INFO_PLAYER_WIDTH - INFO_BORDER + 3, SMALLCHAR_HEIGHT - 1, hcolor );
-		tempx += INFO_PLAYER_WIDTH;
+		hcolor[3] = fade * 0.25f;
+		VectorSet( hcolor, 0.45f, 0.65f, 0.95f );		// Modern accent highlight
 
 		if ( score->ping < 0 || (ci->team == TEAM_SPECTATOR && ci->shoutcaster)) {
-            // Connecting or shoutcasters get simpler row
-			int width;
-			width = INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
-
-			CG_FillRect( tempx, y + 1, width - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-			tempx += width;
+			totalW = INFO_PLAYER_WIDTH + INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
+		} else if( cg_gameType.integer == GT_WOLF_LMS ) {
+			totalW = INFO_PLAYER_WIDTH + INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
 		} else {
-            // Class box
-			CG_FillRect( tempx, y + 1, INFO_CLASS_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-			tempx += INFO_CLASS_WIDTH;
-
-			if( cg_gameType.integer == GT_WOLF_LMS ) {
-                // LMS gets score
-				CG_FillRect( tempx, y + 1, INFO_SCORE_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-				tempx += INFO_SCORE_WIDTH;
-			} else {
-                // XP Box
-				CG_FillRect( tempx, y + 1, INFO_XP_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-				tempx += INFO_XP_WIDTH;				
-			}
-
-            // Ping
-			CG_FillRect( tempx, y + 1, INFO_LATENCY_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-			tempx += INFO_LATENCY_WIDTH;
-
-			if( cg_gameType.integer != GT_WOLF_LMS ) {
-                // Lives box
-				CG_FillRect( tempx, y + 1, INFO_LIVES_WIDTH - INFO_BORDER, SMALLCHAR_HEIGHT - 1, hcolor );
-				tempx += INFO_LIVES_WIDTH;
-			}
+			totalW = INFO_PLAYER_WIDTH + INFO_CLASS_WIDTH + INFO_XP_WIDTH + INFO_LATENCY_WIDTH + INFO_LIVES_WIDTH;
 		}
+
+		CG_FillRect( x - 3, y + 1, totalW + 3, SMALLCHAR_HEIGHT - 1, hcolor );
 	}
 
 	tempx = x;
@@ -394,40 +372,20 @@ static void WM_DrawClientScore_Small( int x, int y, score_t *score, float *color
 	ci = &cgs.clientinfo[score->client];
 
 	if ( score->client == cg.snap->ps.clientNum ) {
-		tempx = x;
+		float totalW;
 
 		hcolor[3] = fade * 0.3;
-		VectorSet( hcolor, .5f, .5f, .2f );			// DARK-RED
-
-		CG_FillRect( tempx - 3, y + 1, INFO_PLAYER_WIDTH - INFO_BORDER + 3, MINICHAR_HEIGHT - 1, hcolor );
-		tempx += INFO_PLAYER_WIDTH;
+		VectorSet( hcolor, 0.45f, 0.65f, 0.95f );		// Modern accent highlight
 
 		if ( score->ping < 0 || (ci->team == TEAM_SPECTATOR && ci->shoutcaster)) {
-			int width;
-			width = INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
-
-			CG_FillRect( tempx, y + 1, width - INFO_BORDER, MINICHAR_HEIGHT - 1, hcolor );
-			tempx += width;
+			totalW = INFO_PLAYER_WIDTH + INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
+		} else if( cg_gameType.integer == GT_WOLF_LMS ) {
+			totalW = INFO_PLAYER_WIDTH + INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
 		} else {
-			CG_FillRect( tempx, y + 1, INFO_CLASS_WIDTH - INFO_BORDER, MINICHAR_HEIGHT - 1, hcolor );
-			tempx += INFO_CLASS_WIDTH;
-
-			if( cg_gameType.integer == GT_WOLF_LMS ) {
-				CG_FillRect( tempx, y + 1, INFO_SCORE_WIDTH - INFO_BORDER, MINICHAR_HEIGHT - 1, hcolor );
-				tempx += INFO_SCORE_WIDTH;
-			} else {
-				CG_FillRect( tempx, y + 1, INFO_XP_WIDTH - INFO_BORDER, MINICHAR_HEIGHT - 1, hcolor );
-				tempx += INFO_XP_WIDTH;				
-			}
-
-			CG_FillRect( tempx, y + 1, INFO_LATENCY_WIDTH - INFO_BORDER, MINICHAR_HEIGHT - 1, hcolor );
-			tempx += INFO_LATENCY_WIDTH;
-
-			if( cg_gameType.integer != GT_WOLF_LMS ) {
-				CG_FillRect( tempx, y + 1, INFO_LIVES_WIDTH - INFO_BORDER, MINICHAR_HEIGHT - 1, hcolor );
-				tempx += INFO_LIVES_WIDTH;
-			}
+			totalW = INFO_PLAYER_WIDTH + INFO_CLASS_WIDTH + INFO_XP_WIDTH + INFO_LATENCY_WIDTH + INFO_LIVES_WIDTH;
 		}
+
+		CG_FillRect( x - 3, y + 1, totalW + 3, MINICHAR_HEIGHT - 1, hcolor );
 	}
 
 	tempx = x;
@@ -553,7 +511,7 @@ static void WM_DrawClientScore_Small( int x, int y, score_t *score, float *color
 static int WM_DrawInfoLine( int x, int y, float fade ) {
 	int w, defender, winner;
 	const char *s;
-	vec4_t tclr =	{ 0.6f,		0.6f,		0.6f,		1.0f };
+	vec4_t tclr =	{ 0.55f,	0.55f,	0.60f,	1.0f };
 
 	if ( cg.snap->ps.pm_type != PM_INTERMISSION ) {
 		return y;
@@ -608,7 +566,7 @@ static int WM_TeamScoreboard( int x, int y, team_t team, float fade, int maxrows
 	int i;
 	int count = 0;
 	qboolean use_mini_chars = qfalse; // CHRUKER: b035 - Needed to check if using mini chars
-	vec4_t tclr =	{ 0.6f,		0.6f,		0.6f,		1.0f };
+	vec4_t tclr =	{ 0.55f,	0.55f,	0.60f,	1.0f };
 
 	height = SMALLCHAR_HEIGHT * maxrows;
 	width = INFO_PLAYER_WIDTH + INFO_CLASS_WIDTH + INFO_SCORE_WIDTH + INFO_LATENCY_WIDTH;
@@ -651,7 +609,7 @@ static int WM_TeamScoreboard( int x, int y, team_t team, float fade, int maxrows
 			}
 			stdDeviation = sqrt(total/numPings);
 		}
-		CG_Text_Paint_Ext( x, y, 0.2f, 0.2f, tclr, va( "AVERAGE PING: %.2fms ± %.2fms", mean, stdDeviation ), 0, 0, 0, &cgs.media.limboFont1 );
+		CG_Text_Paint_Ext( x, y, 0.2f, 0.2f, tclr, va( "AVERAGE PING: %.2fms ï¿½ %.2fms", mean, stdDeviation ), 0, 0, 0, &cgs.media.limboFont1 );
 	}
 
 	// draw header
@@ -732,10 +690,10 @@ static int WM_TeamScoreboard( int x, int y, team_t team, float fade, int maxrows
 	// draw color bands
 	for ( i = 0; i < maxrows; i++ ) {
 		if ( i % 2 == 0 )
-			VectorSet( hcolor, (80.f/255.f), (80.f/255.f), (80.f/255.f) );// LIGHT BLUE
+			VectorSet( hcolor, 0.14f, 0.16f, 0.20f );	// Modern light row
 		else
-			VectorSet( hcolor, (0.f/255.f), (0.f/255.f), (0.f/255.f) ); // DARK BLUE
-		hcolor[3] = fade * 0.3;
+			VectorSet( hcolor, 0.10f, 0.10f, 0.12f );	// Modern dark row
+		hcolor[3] = fade * 0.25f;
 		
 		if ( use_mini_chars ) {
 			// CHRUKER: b076 - Adjusted y height, and changed to DrawBottom instead of DrawTopBottom

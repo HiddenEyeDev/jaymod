@@ -11,9 +11,9 @@
 // Macros //
 
 #include "ui/menumacros.h"
-		
+
 // Ingame Private Message Menu //
-	
+
 menuDef
 {
 	name		"ingame_privatemessage"
@@ -21,61 +21,68 @@ menuDef
 	fullscreen	0
 	rect		WINDOW_X WINDOW_Y WINDOW_WIDTH WINDOW_HEIGHT
 	style		WINDOW_STYLE_FILLED
-	// popup
-	// modal
-	
+
 	onOpen
 	{
 		closeAllOtherMenus ;
 		setEditFocus "efleftSay:"	// note this depends on the macro + item name
 	}
-	
+
 	onESC
 	{
 		close ingame_privatemessage ;
 	}
-	
+
 	onEnter
 	{
 		close ingame_privatemessage ;
 		exec privateSend ;
 	}
-	
+
 // Subwindows //
 
-#define SUBWINDOW_WIDTH		320
-#define SUBWINDOW_HEIGHT	64
+#define SUBWINDOW_WIDTH		340
+#define SUBWINDOW_HEIGHT	68
 #define SUBWINDOW_X			.5*(WINDOW_WIDTH-SUBWINDOW_WIDTH)
-#define SUBWINDOW_Y			320	// .5*(WINDOW_HEIGHT-SUBWINDOW_HEIGHT)
+#define SUBWINDOW_Y			316	// .5*(WINDOW_HEIGHT-SUBWINDOW_HEIGHT)
+
+	// Dim overlay background
+	itemDef {
+		name		"overlay"
+		group		GROUP_NAME
+		rect		0 0 WINDOW_WIDTH WINDOW_HEIGHT
+		style		WINDOW_STYLE_FILLED
+		backcolor	0 0 0 .60
+		visible		1
+		decoration
+	}
 
 	SUBWINDOWBLACK( SUBWINDOW_X, SUBWINDOW_Y, SUBWINDOW_WIDTH, SUBWINDOW_HEIGHT, "PRIVATE MESSAGE" )
-	
-	// EDITFIELDLEFT( SUBWINDOW_X+4, SUBWINDOW_Y+16, (SUBWINDOW_WIDTH)-8, 10, "Say:", .2, 8, "cg_messageText", 128, 32 )
-	
+
 	itemDef {
 		name		"efleftbackSay:"
 		group		GROUP_NAME
-		rect		$evalfloat((SUBWINDOW_X+4)+24+6) $evalfloat(SUBWINDOW_Y+16) $evalfloat((SUBWINDOW_WIDTH)-8-24-6) $evalfloat(10)
+		rect		$evalfloat((SUBWINDOW_X+4)+24+6) $evalfloat(SUBWINDOW_Y+18) $evalfloat((SUBWINDOW_WIDTH)-8-24-6) $evalfloat(10)
 		style		WINDOW_STYLE_FILLED
-		backcolor	.5 .5 .5 .2
+		backcolor	0.10 0.10 0.12 .50
 		visible		1
 		decoration
 	}
-	EDITFIELDLEFT( SUBWINDOW_X+4, SUBWINDOW_Y+16, (SUBWINDOW_WIDTH)-12, 10,
+	EDITFIELDLEFT( SUBWINDOW_X+4, SUBWINDOW_Y+18, (SUBWINDOW_WIDTH)-12, 10,
 		"Say:", .2, 8, "cg_messageText" onEsc { close ingame_privatemessage }, 95, 95, "Enter text here - press ESCAPE twice to cancel" )
-	
+
 	itemDef {
 		name		"efleftbackTo:"
 		group		GROUP_NAME
-		rect		$evalfloat((SUBWINDOW_X+4)+24+6) $evalfloat(SUBWINDOW_Y+28) $evalfloat((SUBWINDOW_WIDTH)-8-24-6) $evalfloat(10)
+		rect		$evalfloat((SUBWINDOW_X+4)+24+6) $evalfloat(SUBWINDOW_Y+30) $evalfloat((SUBWINDOW_WIDTH)-8-24-6) $evalfloat(10)
 		style		WINDOW_STYLE_FILLED
-		backcolor	.5 .5 .5 .2
+		backcolor	0.10 0.10 0.12 .50
 		visible		1
 		decoration
 	}
-	EDITFIELDLEFT( SUBWINDOW_X+4, SUBWINDOW_Y+28, (SUBWINDOW_WIDTH)-12, 10,
+	EDITFIELDLEFT( SUBWINDOW_X+4, SUBWINDOW_Y+30, (SUBWINDOW_WIDTH)-12, 10,
 		"To: ", .2, 8, "cg_messageRcpt" onEsc { close ingame_privatemessage }, 36, 36, "Enter the player slot or partial name of the person to PM" )
-	
+
 	BUTTON( SUBWINDOW_X+6, SUBWINDOW_Y+SUBWINDOW_HEIGHT-24, .5*(SUBWINDOW_WIDTH-18), 18,
 		"CANCEL", .3, 14, close ingame_privatemessage ; )
 	BUTTON( SUBWINDOW_X+6+.5*(SUBWINDOW_WIDTH-18)+6, SUBWINDOW_Y+SUBWINDOW_HEIGHT-24, .5*(SUBWINDOW_WIDTH-18), 18,

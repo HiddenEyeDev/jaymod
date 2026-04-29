@@ -830,6 +830,41 @@ typedef struct {
 //unlagged - true ping
 
 	int			joinedTeamTime;
+
+	// Jaymod-AC: pending connect announcement, deferred from ClientConnect
+	// (where client is CON_CONNECTING) until first ClientBegin so the joining
+	// player can actually see their own message. Cleared after broadcast.
+	qboolean	connectAnnouncePending;
+	char		connectAnnounceMsg[384];
+
+	// Jaymod-AC: pending "welcome back, last seen X ago" broadcast, deferred
+	// from ClientConnect (where User.timestamp still holds the previous
+	// disconnect time) to ClientBegin so the joining player can see it too.
+	qboolean	welcomeBackPending;
+	char		welcomeBackMsg[256];
+
+	// Jaymod-AC: transient profile/stats trackers.  Persistent stats live on
+	// the User record; these are per-connection state that drives them.
+	int			currentStreak;        // current kill streak (resets on death)
+	time_t		statsAccrueAnchor;    // wall-clock at which playtime accrual
+	                                  // last anchored — bumped on every accrue
+	                                  // (connect, session-write, disconnect)
+	                                  // so we never miss seconds.
+	int			statKillsSnap;        // last sess.kills value we accrued from
+	int			statDeathsSnap;       // last sess.deaths
+	int			statHeadshotsSnap;    // last sess.headshots
+	int			statShotsFiredSnap;   // last sum(aWeaponStats[].atts)
+	int			statShotsHitSnap;     // last sum(aWeaponStats[].hits)
+
+	// Multi-kill window (achievements).  Sliding 4-second window: each kill
+	// while level.time < multiKillExpireTime extends the streak; otherwise
+	// the window resets.  Reset to 0 on death/respawn.
+	int			multiKillCount;
+	int			multiKillExpireTime;
+
+	// !rep cooldown — wall-clock at which this client may give rep again.
+	// 5-minute throttle (g_repCooldown cvar) prevents spam.
+	time_t		repCooldownUntil;
 } clientPersistant_t;
 
 typedef struct {
@@ -2664,6 +2699,7 @@ qboolean G_LandmineSnapshotCallback( int entityNum, int clientNum );
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <game/etpro_mdx.h>
+#include <game/g_achievements.h>
 #include <game/g_jaymod.h>
 #include <game/g_molotov.h>
 

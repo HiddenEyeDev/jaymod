@@ -427,8 +427,8 @@ void CG_AddPMItemBig( popupMessageBigType_t type, const char* message, qhandle_t
 #define PM_ICON_SIZE_NORMAL 20
 #define PM_ICON_SIZE_SMALL 12
 void CG_DrawPMItems( void ) {
-	vec4_t colour = { 0.f, 0.f, 0.f, 1.f };
-	vec4_t colourText = { 1.f, 1.f, 1.f, 1.f };
+	vec4_t colour = { 0.08f, 0.08f, 0.10f, 0.85f };
+	vec4_t colourText = { 0.78f, 0.80f, 0.84f, 1.0f };
 	float t;
 	int i, size;
 	pmListItem_t* listItem = cg_pmOldList;

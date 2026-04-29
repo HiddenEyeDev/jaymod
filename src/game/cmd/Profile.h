@@ -1,0 +1,18 @@
+#ifndef GAME_CMD_PROFILE_H
+#define GAME_CMD_PROFILE_H
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Profile : public AbstractBuiltin
+{
+protected:
+    PostAction doExecute( Context& );
+
+public:
+    Profile();
+    ~Profile();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // GAME_CMD_PROFILE_H

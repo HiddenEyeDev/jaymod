@@ -40,6 +40,64 @@ vec4_t		clrBrownText =		{108/255.f,			88/255.f,		62/255.f,		1.f};
 vec4_t		clrBrownTextDk =	{20/255.f,			2/255.f,		0/255.f,		1.f};
 vec4_t		clrBrownTextDk2 =	{108*0.75/255.f,	88*0.75/255.f,	62*0.75/255.f,	1.f};
 
+// ===================================================================
+// Modern UI Theme Colors (Clean & Minimal)
+// ===================================================================
+
+// -- Backgrounds --
+vec4_t		clrUiBgPrimary       = {0.08f, 0.08f, 0.10f, 0.85f};
+vec4_t		clrUiBgSecondary     = {0.12f, 0.12f, 0.14f, 0.80f};
+vec4_t		clrUiBgTertiary      = {0.16f, 0.16f, 0.18f, 0.75f};
+vec4_t		clrUiBgOverlay       = {0.02f, 0.02f, 0.04f, 0.60f};
+
+// -- Text --
+vec4_t		clrUiTextPrimary     = {0.92f, 0.92f, 0.95f, 1.00f};
+vec4_t		clrUiTextSecondary   = {0.55f, 0.55f, 0.60f, 1.00f};
+vec4_t		clrUiTextDisabled    = {0.35f, 0.35f, 0.38f, 1.00f};
+vec4_t		clrUiTextAccent      = {0.45f, 0.65f, 0.95f, 1.00f};
+
+// -- Accent --
+vec4_t		clrUiAccent          = {0.45f, 0.65f, 0.95f, 1.00f};
+vec4_t		clrUiAccentHover     = {0.55f, 0.75f, 1.00f, 1.00f};
+vec4_t		clrUiAccentSubtle    = {0.30f, 0.45f, 0.70f, 0.60f};
+vec4_t		clrUiAccentGlow      = {0.45f, 0.65f, 0.95f, 0.15f};
+
+// -- Borders --
+vec4_t		clrUiBorder          = {0.25f, 0.25f, 0.28f, 0.40f};
+vec4_t		clrUiBorderHover     = {0.35f, 0.40f, 0.50f, 0.60f};
+vec4_t		clrUiBorderAccent    = {0.45f, 0.65f, 0.95f, 0.50f};
+
+// -- Buttons --
+vec4_t		clrUiBtnBg           = {0.15f, 0.15f, 0.18f, 0.60f};
+vec4_t		clrUiBtnBgHover      = {0.20f, 0.22f, 0.28f, 0.75f};
+vec4_t		clrUiBtnBgActive     = {0.25f, 0.28f, 0.35f, 0.85f};
+vec4_t		clrUiBtnText         = {0.78f, 0.80f, 0.84f, 1.00f};
+vec4_t		clrUiBtnTextHover    = {1.00f, 1.00f, 1.00f, 1.00f};
+
+// -- Title bar --
+vec4_t		clrUiTitleBg         = {0.10f, 0.12f, 0.16f, 0.92f};
+vec4_t		clrUiTitleText       = {0.75f, 0.80f, 0.90f, 1.00f};
+vec4_t		clrUiTitleAccent     = {0.45f, 0.65f, 0.95f, 0.80f};
+
+// -- Semantic --
+vec4_t		clrUiSuccess         = {0.30f, 0.75f, 0.45f, 1.00f};
+vec4_t		clrUiWarning         = {0.95f, 0.75f, 0.25f, 1.00f};
+vec4_t		clrUiDanger          = {0.85f, 0.30f, 0.30f, 1.00f};
+vec4_t		clrUiInfo            = {0.45f, 0.65f, 0.95f, 1.00f};
+
+// -- HUD --
+vec4_t		clrHudHealthHigh     = {0.30f, 0.80f, 0.45f, 0.90f};
+vec4_t		clrHudHealthMed      = {0.95f, 0.75f, 0.25f, 0.90f};
+vec4_t		clrHudHealthLow      = {0.85f, 0.25f, 0.25f, 0.90f};
+vec4_t		clrHudStamina        = {0.45f, 0.65f, 0.95f, 0.90f};
+vec4_t		clrHudAmmo           = {0.92f, 0.92f, 0.95f, 1.00f};
+vec4_t		clrHudAmmoLow        = {0.85f, 0.30f, 0.30f, 1.00f};
+vec4_t		clrHudBarBg          = {0.10f, 0.10f, 0.12f, 0.50f};
+vec4_t		clrHudPanelBg        = {0.06f, 0.06f, 0.08f, 0.70f};
+vec4_t		clrHudPanelBorder    = {0.25f, 0.25f, 0.28f, 0.30f};
+vec4_t		clrHudText           = {0.88f, 0.88f, 0.92f, 1.00f};
+vec4_t		clrHudTextDim        = {0.55f, 0.55f, 0.60f, 0.80f};
+
 vec4_t	g_color_table[32] =
 	{
 		{ 0.0,	0.0,	0.0,	1.0 },	// 0 - black		0
@@ -1613,18 +1671,18 @@ float VectorDistanceSquared(vec3_t v1, vec3_t v2) {
 }
 
  
-#ifdef _MSC_VER
- 
-	int rint (double x) {  
-				                 
-		int i;  
+#if defined(_MSC_VER) && _MSC_VER < 1800
 
-  		__asm {  
-  			fld x;  
-	 		fistp i;  
-		};  
-   	 
-  		return i;  
+	int rint (double x) {
+
+		int i;
+
+  		__asm {
+  			fld x;
+	 		fistp i;
+		};
+
+  		return i;
 
 	}
 

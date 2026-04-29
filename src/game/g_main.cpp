@@ -1,5 +1,8 @@
 #include <bgame/impl.h>
 #include <omnibot/et/g_etbot_interface.h>
+#include "g_geoip.h"
+#include "g_achievements.h"
+#include "g_profile.h"
 
 level_locals_t	level;
 
@@ -198,6 +201,12 @@ vmCvar_t		g_classChange;
 vmCvar_t		team_maxArtillery;
 vmCvar_t		g_dragCorpse;
 vmCvar_t		g_killingSpree;
+vmCvar_t		g_announceHP;
+vmCvar_t		g_announceConnect;
+vmCvar_t		g_geoipFile;
+vmCvar_t		g_welcomeBack;
+vmCvar_t		g_welcomeBackThreshold;
+vmCvar_t		g_repCooldown;
 vmCvar_t		g_xpSave;
 vmCvar_t		g_xpSaveTimeout;
 vmCvar_t		g_xpMax;
@@ -365,6 +374,12 @@ cvarTable_t		gameCvarTable[] = {
 
 	// Killing Sprees
 	{ &g_killingSpree,		"g_killingSpree",		"0",		CVAR_LATCH },
+	{ &g_announceHP,		"g_announceHP",			"1",		CVAR_ARCHIVE },
+	{ &g_announceConnect,	"g_announceConnect",	"1",		CVAR_ARCHIVE },
+	{ &g_geoipFile,			"g_geoipFile",			"GeoIP.dat",CVAR_ARCHIVE | CVAR_LATCH },
+	{ &g_welcomeBack,		"g_welcomeBack",		"1",		CVAR_ARCHIVE },
+	{ &g_welcomeBackThreshold,"g_welcomeBackThreshold","1800",	CVAR_ARCHIVE },
+	{ &g_repCooldown,		"g_repCooldown",		"300",		CVAR_ARCHIVE },
 	{ &g_killSpreeLevels,	"g_killSpreeLevels",	"",			0 },
 	{ &g_loseSpreeLevels,	"g_loseSpreeLevels",	"",			0 },
 
@@ -1819,6 +1834,8 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
     molotov::init();
 	BG_cpuUpdate();
     adminLog.init();
+    G_GeoIP_Init();
+    Ach::onLevelInit();
 
     // Load users databases
 	levelDB.load();
@@ -2232,6 +2249,7 @@ void G_ShutdownGame( int restart ) {
 
     molotov::shutdown();
     process.shutdown();
+    G_GeoIP_Shutdown();
 
     if (cvars::g_shutdownExit.ivalue)
         exit( cvars::g_shutdownExit.ivalue );
@@ -2683,6 +2701,9 @@ void BeginIntermission( void ) {
 	G_BinocWar( qtrue );		// Binocular War
 	G_DisplayLastKill();		// Last kill of the map
 	G_LSFinalizeMap();			// Killing spree record
+
+	// Jaymod-AC: round MVP categories (top fragger, damage, medic, eng, cvops).
+	G_Profile_AnnounceMVP();
 }
 
 

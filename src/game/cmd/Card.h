@@ -1,0 +1,18 @@
+#ifndef GAME_CMD_CARD_H
+#define GAME_CMD_CARD_H
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Card : public AbstractBuiltin
+{
+protected:
+    PostAction doExecute( Context& );
+
+public:
+    Card();
+    ~Card();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // GAME_CMD_CARD_H

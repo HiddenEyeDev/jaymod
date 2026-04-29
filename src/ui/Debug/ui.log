@@ -1,0 +1,23 @@
+﻿  ui_main.cpp
+  static.cpp
+  ui_atoms.cpp
+  ui_gameinfo.cpp
+  ui_loadpanel.cpp
+  ui_players.cpp
+  ui_shared.cpp
+  ui_syscalls.cpp
+  q_math.cpp
+  q_shared.cpp
+  bg_cpu.cpp
+  Cvar.cpp
+  PairDump.cpp
+  util.cpp
+  Generating Code...
+  Cvar.cpp
+  bg_campaign.cpp
+  bg_classes.cpp
+  bg_jaymod.cpp
+  bg_misc.cpp
+     Creating library .\Debug\ui_mp_x86.lib and object .\Debug\ui_mp_x86.exp
+  ui.vcxproj -> C:\Users\hidde\Desktop\jaymod-AC\src\Debug\ui_mp_x86.dll
+  Copy to ET

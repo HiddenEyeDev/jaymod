@@ -11,6 +11,17 @@ User::User( )
     , authLevel     ( 0 )
     , privGranted   ( NULL )
     , privDenied    ( NULL )
+    , statKills        ( 0 )
+    , statDeaths       ( 0 )
+    , statHeadshots    ( 0 )
+    , statLongestStreak( 0 )
+    , statPlaytimeSecs ( 0 )
+    , statShotsFired   ( 0 )
+    , statShotsHit     ( 0 )
+    , firstSeen        ( 0 )
+    , statRank         ( 1 )
+    , statRepPositive  ( 0 )
+    , statRepNegative  ( 0 )
     , muted         ( false )
     , muteTime      ( 0 )
     , muteExpiry    ( 0 )
@@ -18,7 +29,8 @@ User::User( )
     , banTime       ( 0 )
     , banExpiry     ( 0 )
 {
-    memset( xpSkills, 0, sizeof(xpSkills) );
+    memset( xpSkills,  0, sizeof(xpSkills) );
+    memset( achCount,  0, sizeof(achCount) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +42,17 @@ User::User( bool console )
     , authLevel     ( 0 )
     , privGranted   ( NULL )
     , privDenied    ( NULL )
+    , statKills        ( 0 )
+    , statDeaths       ( 0 )
+    , statHeadshots    ( 0 )
+    , statLongestStreak( 0 )
+    , statPlaytimeSecs ( 0 )
+    , statShotsFired   ( 0 )
+    , statShotsHit     ( 0 )
+    , firstSeen        ( 0 )
+    , statRank         ( 1 )
+    , statRepPositive  ( 0 )
+    , statRepNegative  ( 0 )
     , muted         ( false )
     , muteTime      ( 0 )
     , muteExpiry    ( 0 )
@@ -38,6 +61,7 @@ User::User( bool console )
     , banExpiry     ( 0 )
 {
     memset( xpSkills, 0, sizeof(xpSkills) );
+    memset( achCount, 0, sizeof(achCount) );
 
     if (console) {
         authLevel = Level::NUM_MAX;
@@ -147,6 +171,69 @@ User::decode( map<string,string>& data )
 
     greetingText = data["greetingtext"];
     greetingAudio = data["greetingaudio"];
+
+    // Jaymod-AC profile/stats
+    {
+        stringstream pss;
+
+        pss.str(""); pss.clear(); pss << data["statkills"];          pss >> statKills;
+        pss.str(""); pss.clear(); pss << data["statdeaths"];         pss >> statDeaths;
+        pss.str(""); pss.clear(); pss << data["statheadshots"];      pss >> statHeadshots;
+        pss.str(""); pss.clear(); pss << data["statlongeststreak"];  pss >> statLongestStreak;
+        pss.str(""); pss.clear(); pss << data["statplaytimesecs"];   pss >> statPlaytimeSecs;
+        pss.str(""); pss.clear(); pss << data["statshotsfired"];     pss >> statShotsFired;
+        pss.str(""); pss.clear(); pss << data["statshotshit"];       pss >> statShotsHit;
+        pss.str(""); pss.clear(); pss << data["firstseen"];          pss >> firstSeen;
+        pss.str(""); pss.clear(); pss << data["statrank"];           pss >> statRank;
+        pss.str(""); pss.clear(); pss << data["statreppositive"];    pss >> statRepPositive;
+        pss.str(""); pss.clear(); pss << data["statrepnegative"];    pss >> statRepNegative;
+
+        if (statKills < 0)         statKills = 0;
+        if (statDeaths < 0)        statDeaths = 0;
+        if (statHeadshots < 0)     statHeadshots = 0;
+        if (statLongestStreak < 0) statLongestStreak = 0;
+        if (statPlaytimeSecs < 0)  statPlaytimeSecs = 0;
+        if (statShotsFired < 0)    statShotsFired = 0;
+        if (statShotsHit < 0)      statShotsHit = 0;
+        if (firstSeen < 0)         firstSeen = 0;
+        if (statRank < 1)          statRank = 1;
+        if (statRank > MAX_RANK)   statRank = MAX_RANK;
+        if (statRepPositive < 0)   statRepPositive = 0;
+        if (statRepNegative < 0)   statRepNegative = 0;
+    }
+
+    // Customization (Phase 5).  Plain strings — censorship and length caps
+    // are enforced at SET time (see cmd::SetProfile), but defensively trim
+    // here too against hand-edited user.db entries.
+    customTitle     = data["customtitle"];
+    customSignature = data["customsignature"];
+    customClanTag   = data["customclantag"];
+
+    if (customTitle.length()     > CUSTOM_TITLE_MAX) customTitle.resize    ( CUSTOM_TITLE_MAX );
+    if (customSignature.length() > CUSTOM_SIG_MAX)   customSignature.resize( CUSTOM_SIG_MAX );
+    if (customClanTag.length()   > CUSTOM_CLAN_MAX)  customClanTag.resize  ( CUSTOM_CLAN_MAX );
+
+    // Achievements: decode via named keys so storage is robust against
+    // enum reordering / inserts.
+    {
+        memset( achCount, 0, sizeof(achCount) );
+
+        for (int i = 0; i < (int)Ach::NUM && i < ACH_MAX; i++) {
+            string key = "ach.";
+            key += Ach::kDefs[i].key;
+            str::toLower( key );
+
+            map<string,string>::iterator it = data.find( key );
+            if (it == data.end() || it->second.empty()) continue;
+
+            stringstream pss;
+            pss << it->second;
+            int v = 0;
+            pss >> v;
+            if (v < 0) v = 0;
+            achCount[i] = v;
+        }
+    }
 
     ss.str("");
     ss.clear();
@@ -357,6 +444,34 @@ User::encode( ostream& out, int recnum )
     out << '\n' << "greetingText = "  << greetingText;
     out << '\n' << "greetingAudio = " << greetingAudio;
 
+    // Jaymod-AC profile/stats — only emit when meaningful (cuts noise from
+    // the user.db file for users that have never played).
+    if (firstSeen) {
+        char fsbuf[32];
+        strftime( fsbuf, sizeof(fsbuf), "%c", localtime( &firstSeen ));
+        out << '\n' << "firstSeen = " << firstSeen << " # " << fsbuf;
+    }
+    if (statKills)         out << '\n' << "statKills = "         << statKills;
+    if (statDeaths)        out << '\n' << "statDeaths = "        << statDeaths;
+    if (statHeadshots)     out << '\n' << "statHeadshots = "     << statHeadshots;
+    if (statLongestStreak) out << '\n' << "statLongestStreak = " << statLongestStreak;
+    if (statPlaytimeSecs)  out << '\n' << "statPlaytimeSecs = "  << statPlaytimeSecs;
+    if (statShotsFired)    out << '\n' << "statShotsFired = "    << statShotsFired;
+    if (statShotsHit)      out << '\n' << "statShotsHit = "      << statShotsHit;
+    if (statRank > 1)      out << '\n' << "statRank = "          << statRank;
+    if (statRepPositive)   out << '\n' << "statRepPositive = "   << statRepPositive;
+    if (statRepNegative)   out << '\n' << "statRepNegative = "   << statRepNegative;
+
+    if (!customTitle.empty())     out << '\n' << "customTitle = "     << customTitle;
+    if (!customSignature.empty()) out << '\n' << "customSignature = " << customSignature;
+    if (!customClanTag.empty())   out << '\n' << "customClanTag = "   << customClanTag;
+
+    // Achievements: only emit non-zero rows so the file stays compact.
+    for (int i = 0; i < (int)Ach::NUM && i < ACH_MAX; i++) {
+        if (achCount[i] > 0)
+            out << '\n' << "ach." << Ach::kDefs[i].key << " = " << achCount[i];
+    }
+
 #if defined( JAYMOD_USERDB_DEBUG )
     out << "#xpSkills = " << xpSkills[0]
         << " " << xpSkills[1]
@@ -551,7 +666,23 @@ User::operator=( const User& ref )
         }
     }
 
+    statKills         = ref.statKills;
+    statDeaths        = ref.statDeaths;
+    statHeadshots     = ref.statHeadshots;
+    statLongestStreak = ref.statLongestStreak;
+    statPlaytimeSecs  = ref.statPlaytimeSecs;
+    statShotsFired    = ref.statShotsFired;
+    statShotsHit      = ref.statShotsHit;
+    firstSeen         = ref.firstSeen;
+    statRank          = ref.statRank;
+    statRepPositive   = ref.statRepPositive;
+    statRepNegative   = ref.statRepNegative;
+    customTitle       = ref.customTitle;
+    customSignature   = ref.customSignature;
+    customClanTag     = ref.customClanTag;
+
     memcpy( xpSkills, ref.xpSkills, sizeof(xpSkills) );
+    memcpy( achCount, ref.achCount, sizeof(achCount) );
 
     muted          = ref.muted;
     muteTime       = ref.muteTime;
@@ -617,6 +748,162 @@ void
 User::xpReset()
 {
     memset( xpSkills, 0, sizeof(xpSkills) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// ---------------------------------------------------------------------------
+// Jaymod-AC: rank progression curve.
+//
+// Tier-based with gentle early ramp and stiffer end-game tail. Index = rank-1.
+// MAX_RANK = 20.  Tune by swapping the table; nothing else cares about
+// specific numbers as long as the array is monotonically increasing.
+// ---------------------------------------------------------------------------
+namespace {
+const int kRankXp[ User::MAX_RANK ] = {
+    0,         //  1
+    100,       //  2
+    300,       //  3
+    700,       //  4
+    1500,      //  5
+    3000,      //  6
+    6000,      //  7
+    12000,     //  8
+    24000,     //  9
+    50000,     // 10
+    100000,    // 11
+    175000,    // 12
+    275000,    // 13
+    400000,    // 14
+    600000,    // 15
+    900000,    // 16
+    1300000,   // 17
+    1800000,   // 18
+    2500000,   // 19
+    3500000,   // 20
+};
+} // namespace
+
+int
+User::xpForRank( int rank )
+{
+    if (rank < 1)         return 0;
+    if (rank > MAX_RANK)  return kRankXp[MAX_RANK - 1];
+    return kRankXp[rank - 1];
+}
+
+int
+User::rankForXp( int xp )
+{
+    if (xp < 0) xp = 0;
+    int r = 1;
+    for (int i = MAX_RANK - 1; i >= 0; --i) {
+        if (xp >= kRankXp[i]) { r = i + 1; break; }
+    }
+    return r;
+}
+
+// XP awarded contributions:
+//   - 10 XP per kill
+//   -  5 XP per headshot kill (in addition to the base kill XP)
+//   - 50 XP per non-repeatable achievement unlocked
+//   - 10 XP per repeatable achievement increment
+int
+User::computeXp() const
+{
+    int xp = statKills * 10 + statHeadshots * 5;
+
+    for (int i = 0; i < (int)Ach::NUM && i < ACH_MAX; i++) {
+        const int n = achCount[i];
+        if (n <= 0) continue;
+        if (Ach::kDefs[i].repeatable) xp += n * 10;
+        else                          xp += 50;
+    }
+
+    return xp;
+}
+
+int
+User::computeRank() const
+{
+    return rankForXp( computeXp() );
+}
+
+// ---------------------------------------------------------------------------
+// Jaymod-AC: count of achievements with at least one unlock.
+// ---------------------------------------------------------------------------
+int
+User::achievementsUnlocked() const
+{
+    int n = 0;
+    for (int i = 0; i < ACH_MAX; i++) {
+        if (achCount[i] > 0) ++n;
+    }
+    return n;
+}
+
+// ---------------------------------------------------------------------------
+// Jaymod-AC: lifetime accuracy ratio 0..1 (hits / shots fired).
+// Returns 0 when the player has no shots fired on record.
+// ---------------------------------------------------------------------------
+float
+User::computeAccuracy() const
+{
+    if (statShotsFired <= 0) return 0.f;
+    float a = (float)statShotsHit / (float)statShotsFired;
+    if (a < 0.f) a = 0.f;
+    if (a > 1.f) a = 1.f;  // shouldn't happen, but cap defensively
+    return a;
+}
+
+// ---------------------------------------------------------------------------
+// Jaymod-AC: skill rating 0..1000 from lifetime stats.
+//
+// Phase 2 weighting (per design spec):
+//   K/D       40% — clamp(KD / 3.0, 0, 1) * 400
+//   Accuracy  35% — clamp(acc / 0.40, 0, 1) * 350    (40% acc = full marks)
+//   Kills     15% — clamp(kills / 1000, 0, 1) * 150
+//   Streak    10% — clamp(longestStreak / 30, 0, 1) * 100
+//
+// Players with under 25 lifetime kills are "provisional" — their rating is
+// capped so a single hot round doesn't catapult them to legendary.
+// ---------------------------------------------------------------------------
+int
+User::computeSkillRating() const
+{
+    if (statKills + statDeaths < 1)
+        return 0;
+
+    const float kd = (statDeaths > 0)
+        ? (float)statKills / (float)statDeaths
+        : (float)statKills;
+
+    float kdScore     = kd / 3.0f;
+    if (kdScore > 1.0f) kdScore = 1.0f;
+
+    float accScore    = computeAccuracy() / 0.40f;
+    if (accScore > 1.0f) accScore = 1.0f;
+
+    float killsScore  = statKills / 1000.f;
+    if (killsScore > 1.0f) killsScore = 1.0f;
+
+    float streakScore = statLongestStreak / 30.f;
+    if (streakScore > 1.0f) streakScore = 1.0f;
+
+    float rating = (kdScore     * 400.f)
+                 + (accScore    * 350.f)
+                 + (killsScore  * 150.f)
+                 + (streakScore * 100.f);
+
+    // Provisional cap until 25 lifetime kills.
+    if (statKills < 25) {
+        const float cap = 200.f + ((float)statKills / 25.f) * 600.f;
+        if (rating > cap) rating = cap;
+    }
+
+    if (rating < 0.f)    rating = 0.f;
+    if (rating > 1000.f) rating = 1000.f;
+    return (int)rating;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

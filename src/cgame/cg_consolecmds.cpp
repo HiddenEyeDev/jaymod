@@ -1,9 +1,9 @@
 /*
  * name:		cg_consolecmds.c
  *
- * desc:		text commands typed in at the local console, or executed by a key binding
+ * desc:		text commands typed at the local console, or executed by a key binding
  *
-*/
+ */
 
 #include <bgame/impl.h>
 
@@ -1323,4 +1323,5 @@ void CG_InitConsoleCommands( void ) {
 	trap_AddCommand ("sclogout");
 	trap_AddCommand ("shoutcastlogin");
 	trap_AddCommand ("shoutcastlogout");
+	trap_AddCommand ("statsall");
 }

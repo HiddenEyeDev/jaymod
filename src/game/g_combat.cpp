@@ -7,6 +7,8 @@
 
 #include <bgame/impl.h>
 #include <omnibot/et/g_etbot_interface.h>
+#include "g_profile.h"
+#include "g_achievements.h"
 
 extern void BotRecordKill( int client, int enemy );
 extern void BotRecordPain( int client, int enemy, int mod );
@@ -547,6 +549,36 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		Q_strncpyz(attacker->client->pers.lastkill, self->client->pers.netname, sizeof(attacker->client->pers.lastkill));
         self->client->lastkilledby_client = attacker->s.number;
     }
+
+	// Jaymod-AC: profile streak tracking (kills/deaths/headshots roll up
+	// from sess.* deltas in G_Profile_Accrue; this hook is just for streaks).
+	G_Profile_OnDeath( self, attacker );
+
+	// Jaymod-AC: achievements that hinge on the kill event itself
+	// (streaks, multi-kill window, revenge, first frag of round).
+	Ach::onKill( attacker, self, meansOfDeath );
+
+	// Announce attacker's remaining HP to the victim
+	if(g_announceHP.integer && attacker && attacker->client && attacker != self) {
+		int hp = attacker->client->ps.stats[STAT_HEALTH];
+		if(hp < 0) hp = 0;
+		const char* msg = va("^3%s ^7had ^1%d ^7HP remaining", attacker->client->pers.netname, hp);
+
+		switch(g_announceHP.integer) {
+			case 1: // Center print
+				trap_SendServerCommand(self->s.number, va("cp \"%s\n\"", msg));
+				break;
+			case 2: // Popup message (left-side kill-message area)
+				trap_SendServerCommand(self->s.number, va("cpm \"%s\n\"", msg));
+				break;
+			case 3: // Banner print (top of screen)
+				trap_SendServerCommand(self->s.number, va("bp \"%s\n\"", msg));
+				break;
+			case 4: // Console notification
+				trap_SendServerCommand(self->s.number, va("print \"%s\n\"", msg));
+				break;
+		}
+	}
 
 	//self->client->ps.persistant[PERS_KILLED]++;
 

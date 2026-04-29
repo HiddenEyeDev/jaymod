@@ -261,12 +261,12 @@ void CG_DrawFireTeamOverlay( rectDef_t* rect ) {
 	char buffer[64];
 	fireteamData_t* f = NULL;
 	int i;
-	vec4_t clr1 =	{ .16f,		.2f,	.17f,	.8f };
-	vec4_t clr2 =	{ 0.f,		0.f,	0.f,	.2f };
-	vec4_t clr3 =	{ 0.25f,	0.f,	0.f,	153/255.f };
-	vec4_t tclr =	{ 0.6f,		0.6f,	0.6f,	1.0f };
-	vec4_t bgColor		= { 0.0f, 0.0f, 0.0f, 0.6f };		// window
-	vec4_t borderColor	= { 0.5f, 0.5f, 0.5f, 0.5f };	// window
+	vec4_t clr1 = { 0.10f, 0.12f, 0.16f, 0.85f };
+	vec4_t clr2 =	{ 0.12f, 0.12f, 0.14f, 0.30f };
+	vec4_t clr3 = { 0.45f, 0.65f, 0.95f, 0.60f };
+	vec4_t tclr = { 0.55f, 0.55f, 0.60f, 1.0f };
+	vec4_t bgColor = { 0.08f, 0.08f, 0.10f, 0.75f };
+	vec4_t borderColor = { 0.25f, 0.25f, 0.28f, 0.30f };
     string locStrings[MAX_FIRETEAM_MEMBERS];
 
 	if(!(f = CG_IsOnFireteam( cg.clientNum ))) {

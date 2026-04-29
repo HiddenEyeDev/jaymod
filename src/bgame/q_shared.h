@@ -466,6 +466,64 @@ extern vec4_t		clrBrownTextLt;
 extern vec4_t		clrBrownTextLt2;
 extern vec4_t		clrBrownLineFull;
 
+// ===================================================================
+// Modern UI Theme Colors (Clean & Minimal)
+// ===================================================================
+
+// -- Backgrounds --
+extern vec4_t		clrUiBgPrimary;       // Deep charcoal - main panel bg
+extern vec4_t		clrUiBgSecondary;     // Slightly lighter - card/sub-panel bg
+extern vec4_t		clrUiBgTertiary;      // Elevated elements
+extern vec4_t		clrUiBgOverlay;       // Full-screen overlay backdrop
+
+// -- Text --
+extern vec4_t		clrUiTextPrimary;     // Clean white - main text
+extern vec4_t		clrUiTextSecondary;   // Muted grey - labels, inactive
+extern vec4_t		clrUiTextDisabled;    // Dark grey - disabled items
+extern vec4_t		clrUiTextAccent;      // Accent colored text
+
+// -- Accent --
+extern vec4_t		clrUiAccent;          // Cool blue - primary accent
+extern vec4_t		clrUiAccentHover;     // Brighter blue - hover state
+extern vec4_t		clrUiAccentSubtle;    // Dim blue - subtle accents
+extern vec4_t		clrUiAccentGlow;      // Low-alpha accent for glows
+
+// -- Borders --
+extern vec4_t		clrUiBorder;          // Subtle structural border
+extern vec4_t		clrUiBorderHover;     // Hover border
+extern vec4_t		clrUiBorderAccent;    // Accent-tinted border
+
+// -- Buttons --
+extern vec4_t		clrUiBtnBg;           // Button background
+extern vec4_t		clrUiBtnBgHover;      // Button hover background
+extern vec4_t		clrUiBtnBgActive;     // Button active/pressed
+extern vec4_t		clrUiBtnText;         // Button text
+extern vec4_t		clrUiBtnTextHover;    // Button text hover
+
+// -- Title bar --
+extern vec4_t		clrUiTitleBg;         // Title bar background
+extern vec4_t		clrUiTitleText;       // Title bar text
+extern vec4_t		clrUiTitleAccent;     // Title bar accent line
+
+// -- Semantic --
+extern vec4_t		clrUiSuccess;         // Green - positive
+extern vec4_t		clrUiWarning;         // Amber - caution
+extern vec4_t		clrUiDanger;          // Red - destructive/error
+extern vec4_t		clrUiInfo;            // Blue - informational
+
+// -- HUD --
+extern vec4_t		clrHudHealthHigh;     // Health bar - high
+extern vec4_t		clrHudHealthMed;      // Health bar - medium
+extern vec4_t		clrHudHealthLow;      // Health bar - low/critical
+extern vec4_t		clrHudStamina;        // Stamina bar
+extern vec4_t		clrHudAmmo;           // Ammo text
+extern vec4_t		clrHudAmmoLow;        // Ammo low warning
+extern vec4_t		clrHudBarBg;          // Bar background
+extern vec4_t		clrHudPanelBg;        // HUD panel background
+extern vec4_t		clrHudPanelBorder;    // HUD panel border
+extern vec4_t		clrHudText;           // HUD text
+extern vec4_t		clrHudTextDim;        // HUD secondary text
+
 #define GAME_INIT_FRAMES	6
 #define	FRAMETIME			100					// msec
 
@@ -660,7 +718,8 @@ float VectorDistance(vec3_t v1, vec3_t v2);
 float VectorDistanceSquared(vec3_t v1, vec3_t v2);
 
 // Jaybird - add rint to repetoir (sp?)
-#ifdef _MSC_VER
+// Modern UCRT (VS2013+) provides rint() in <cmath>/<math.h>
+#if defined(_MSC_VER) && _MSC_VER < 1800
 int rint (double x);
 #endif
 

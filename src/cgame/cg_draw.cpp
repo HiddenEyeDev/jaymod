@@ -10,6 +10,8 @@ void SetHeadOrigin(clientInfo_t *ci, playerInfo_t *pi);
 void CG_DrawOverlays();
 int activeFont;
 
+
+
 #define TEAM_OVERLAY_TIME 1000
 
 ////////////////////////
@@ -605,9 +607,9 @@ static float CG_DrawFPS( float y ) {
 	int		fps;
 	static	int	previous;
 	int		t, frameTime;
-	vec4_t		timerBackground =	{ 0.16f,	0.2f,	0.17f,	0.8f	};
-	vec4_t		timerBorder     =	{ 0.5f,		0.5f,	0.5f,	0.5f	};
-	vec4_t		tclr			=	{ 0.625f,	0.625f,	0.6f,	1.0f	};
+	vec4_t		timerBackground =	{ 0.08f,	0.08f,	0.10f,	0.80f	};
+	vec4_t		timerBorder     =	{ 0.25f,	0.25f,	0.28f,	0.30f	};
+	vec4_t		tclr			=	{ 0.78f,	0.80f,	0.84f,	1.0f	};
 
 	// don't use serverTime, because that will be drifting to
 	// correct for internet lag changes, timescales, timedemos, etc
@@ -652,9 +654,9 @@ static float CG_DrawSpeed( float y ) {
 
     char* s;
 
-	vec4_t		color =				{ 0.625f,	0.625f,	0.6f,	1.0f };
-	vec4_t		timerBackground =	{ 0.16f,	0.2f,	0.17f,	0.8f };
-	vec4_t		timerBorder     =	{ 0.5f,		0.5f,	0.5f,	0.5f };
+	vec4_t		color =				{ 0.78f,	0.80f,	0.84f,	1.0f };
+	vec4_t		timerBackground =	{ 0.08f,	0.08f,	0.10f,	0.80f };
+	vec4_t		timerBorder     =	{ 0.25f,	0.25f,	0.28f,	0.30f };
 
     if (cg.time > cg.speedTime) {
         cg.lastSpeed = VectorLength(cg.predictedPlayerState.velocity);
@@ -694,9 +696,9 @@ static float CG_DrawClock( float y ) {
 	struct tm *timestamp_s = localtime( &timestamp );
 	char s[12];
 	int w;
-	vec4_t		color =				{ 0.625f,	0.625f,	0.6f,	1.0f	};
-	vec4_t		timerBackground =	{ 0.16f,	0.2f,	0.17f,	0.8f	};
-	vec4_t		timerBorder     =	{ 0.5f,		0.5f,	0.5f,	0.5f	};
+	vec4_t		color =				{ 0.78f,	0.80f,	0.84f,	1.0f	};
+	vec4_t		timerBackground =	{ 0.08f,	0.08f,	0.10f,	0.80f	};
+	vec4_t		timerBorder     =	{ 0.25f,	0.25f,	0.28f,	0.30f	};
 
     if (cg_drawClock.integer == 2)
         strftime( s, sizeof( s ), "%H:%M:%S", timestamp_s );
@@ -728,9 +730,9 @@ static float CG_DrawTimer( float y ) {
 	int			mins, seconds, tens;
 	int			msec;
 	const char*	rt;
-	vec4_t		color =				{ 0.625f,	0.625f,	0.6f,	1.0f	};
-	vec4_t		timerBackground =	{ 0.16f,	0.2f,	0.17f,	0.8f	};
-	vec4_t		timerBorder     =	{ 0.5f,		0.5f,	0.5f,	0.5f	};
+	vec4_t		color =				{ 0.78f,	0.80f,	0.84f,	1.0f	};
+	vec4_t		timerBackground =	{ 0.08f,	0.08f,	0.10f,	0.80f	};
+	vec4_t		timerBorder     =	{ 0.25f,	0.25f,	0.28f,	0.30f	};
 
 	// CHRUKER: b018 - Respawn timer shouldn't be shown in spectator mode
 	rt = (cgs.gametype != GT_WOLF_LMS && (cgs.clientinfo[cg.clientNum].team != TEAM_SPECTATOR || cg.snap->ps.pm_flags & PMF_FOLLOW) && cg_drawReinforcementTime.integer > 0) ?
@@ -1210,9 +1212,9 @@ static void CG_DrawLagometer( void ) {
 	float	ax, ay, aw, ah, mid, range;
 	int		color;
 	float	vscale;
-	vec4_t colorBG = { 0.16f, 0.2f, 0.17f, 0.4f };
-	vec4_t colorBD = { 0.5f, 0.5f, 0.5f, 0.5f };
-    vec4_t colorAW = { 0, 0.5, 0, 0.5f};
+	vec4_t colorBG = { 0.08f, 0.08f, 0.10f, 0.50f };
+	vec4_t colorBD = { 0.25f, 0.25f, 0.28f, 0.30f };
+    vec4_t colorAW = { 0.30f, 0.75f, 0.45f, 0.5f };
 
 	if ( !cg_lagometer.integer || cgs.localServer ) {
 		CG_DrawDisconnect();
@@ -2621,7 +2623,7 @@ static void CG_DrawCrosshairNames( void ) {
 	            c[0] = 1.0f;
 	            c[1] = c[2] = barFrac;
 	            c[3] = 0.25 + barFrac * 0.5;
-	            Vector4Set( bgcolor, 1.f, 1.f, 1.f, 0.25f );
+	            Vector4Set( bgcolor, 0.20f, 0.20f, 0.22f, 0.30f );
 
                 // Draw the bar
 	            CG_FilledBar( SCREEN_CENTER - 110/*w*/ / 2, 190, 110, 10, c, NULL, bgcolor, barFrac, 16 );
@@ -2875,7 +2877,7 @@ static void CG_DrawCrosshairNames( void ) {
 	c[0] = 1.0f;
 	c[1] = c[2] = barFrac;
 	c[3] = (0.25 + barFrac * 0.5) * color[3];
-	Vector4Set( bgcolor, 1.f, 1.f, 1.f, .25f * color[3] );
+	Vector4Set( bgcolor, 0.20f, 0.20f, 0.22f, .30f * color[3] );
 
     // Draw the bar
 	CG_FilledBar( SCREEN_CENTER - 110/*w*/ / 2, 190, 110, 10, c, NULL, bgcolor, barFrac, 16 );
@@ -2905,7 +2907,7 @@ CG_DrawVote
 static void CG_DrawVote(void) {
 	char	*s;
 	char str1[32], str2[32];
-	float color[4] = { 1, 1, 0, 1 };
+	float color[4] = { 0.78f, 0.80f, 0.84f, 1.0f };
 	int		sec;
 
 	if( cgs.complaintEndTime > cg.time && !cg.demoPlayback && cg_complaintPopUp.integer > 0 && cgs.complaintClient >= 0 ) {
@@ -3858,10 +3860,10 @@ static void CG_DrawObjectiveInfo( void ) {
 	int		x1, y1, x2, y2;
 	float	*color;
 	vec4_t	backColor;
-	backColor[0] = 0.2f;
-	backColor[1] = 0.2f;
-	backColor[2] = 0.2f;
-	backColor[2] = 1.f;
+	backColor[0] = 0.08f;
+	backColor[1] = 0.08f;
+	backColor[2] = 0.10f;
+	backColor[3] = 0.80f;
 
 	if ( !cg.oidPrintTime ) {
 		return;
@@ -4436,7 +4438,7 @@ static void CG_DrawPlayerStatusHead( void ) {
 }
 
 static void CG_DrawPlayerHealthBar( rectDef_t *rect ) {
-	vec4_t bgcolour =	{	1.f,	1.f,	1.f,	0.3f	};
+	vec4_t bgcolour =	{	0.20f,	0.20f,	0.22f,	0.30f	};
 	vec4_t colour;
 		
 	int flags = 1|4|16|64;
@@ -4463,11 +4465,11 @@ static void CG_DrawBreathBar( rectDef_t *rect )
 {
 	float frac = (float)(cg.waterundertime - cg.time) / (float)HOLDBREATHTIME;
 
-	vec4_t bgcolour =   { 1.f,	1.f,  1.f,  0.3f };
-    vec4_t bgcolour2 =  { 1.f,  0.0f, 0.0f, 0.5f };
-    vec4_t clrMid =     { 1.f,  1.f,  1.f,  0.5f };
-	vec4_t clrHigh =    { 0.0f,	0.5f, 1.0f, 0.5f };
-	vec4_t clrLow =     { 1.0f,	0.0f, 0.0f, 0.5f };
+	vec4_t bgcolour =   { 0.20f, 0.20f, 0.22f, 0.30f };
+    vec4_t bgcolour2 =  { 0.85f, 0.20f, 0.20f, 0.50f };
+    vec4_t clrMid =     { 0.78f, 0.80f, 0.84f, 0.50f };
+	vec4_t clrHigh =    { 0.45f, 0.65f, 0.95f, 0.50f };
+	vec4_t clrLow =     { 0.85f, 0.30f, 0.30f, 0.50f };
 	vec4_t color;
 
     CG_LerpColor3( clrHigh, clrMid, clrLow, color, frac );
@@ -4487,9 +4489,9 @@ static void CG_DrawBreathBar( rectDef_t *rect )
 }
 
 static void CG_DrawStaminaBar( rectDef_t *rect ) {
-	vec4_t bgcolour =	{	1.f,	1.f,	1.f,	0.3f	};
-	vec4_t colour =		{	0.1f,	1.0f,	0.1f,	0.5f	};
-	vec4_t colourlow =	{	1.0f,	0.1f,	0.1f,	0.5f	};
+	vec4_t bgcolour =	{	0.20f,	0.20f,	0.22f,	0.30f	};
+	vec4_t colour =		{	0.30f,	0.85f,	0.45f,	0.50f	};
+	vec4_t colourlow =	{	0.85f,	0.30f,	0.30f,	0.50f	};
 	vec_t* color = colour;
 	int flags = 1|4|16|64;
 	float frac = cg.pmext.sprintTime / (float)SPRINTTIME;
@@ -4524,7 +4526,7 @@ static void CG_DrawWeapRecharge( rectDef_t *rect ) {
 	int			weap, flags;
 	qboolean	fade = qfalse;
 
-	vec4_t	bgcolor = { 1.0f, 1.0f, 1.0f, 0.25f };
+	vec4_t	bgcolor = { 0.20f, 0.20f, 0.22f, 0.25f };
 	vec4_t	color;
 
 	flags = 1|4|16;
@@ -4686,11 +4688,11 @@ static void CG_DrawSkillBar( float x, float y, float w, float h, int skill ) {
 	draw_y = y + h - blockheight;
 	for( i = 0; i < 4; i++ ) {
         if (skill >= NUM_SKILL_LEVELS-1)
-			Vector4Set( colour, 0.0f, 0.6f, 0.0f, 0.4f );
+			Vector4Set( colour, 0.30f, 0.85f, 0.45f, 0.50f );
         else if (i >= skill)
-			Vector4Set( colour, 1.0f, 1.0f, 1.0f, 0.15f );
+			Vector4Set( colour, 0.20f, 0.20f, 0.22f, 0.25f );
         else
-			Vector4Set( colour, 0.0f, 0.0f, 0.0f, 0.4f );
+			Vector4Set( colour, 0.12f, 0.12f, 0.14f, 0.50f );
 
 		CG_FillRect( x, draw_y, w, blockheight, colour );
 

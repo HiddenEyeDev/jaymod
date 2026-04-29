@@ -1,4 +1,5 @@
 #include <bgame/impl.h>
+#include "g_profile.h"
 
 /*
 =======================================================================
@@ -101,6 +102,10 @@ void G_WriteClientSessionData( gclient_t *client, qboolean restart )
 
 	// Jaybird - update User record
 	connectedUsers[ client-g_clients ]->timestamp = time( NULL );
+
+	// Jaymod-AC: fold session deltas + playtime into the persistent record
+	// at the same point the rest of the session data is written.
+	G_Profile_Accrue( client - g_clients );
 }
 
 

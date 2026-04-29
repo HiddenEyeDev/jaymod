@@ -8,16 +8,18 @@ int QDECL CG_SortPlayersByXP( const void *a, const void *b );
 
 #define DB_MASTER_FONT &cgs.media.limboFont2
 
+/* Jaymod-AC: title/heading text picks up the accent blue used by the
+ * scoreboard so the intermission UI reads as part of the same theme. */
 panel_button_text_t debriefTitleFont = {
 	0.3f, 0.3f,
-	{ 1.f, 1.f, 1.f, 0.8f },
+	{ 0.45f, 0.65f, 0.95f, 1.0f },
 	0, ITEM_ALIGN_CENTER,
 	DB_MASTER_FONT,
 };
 
 panel_button_text_t debriefHeadingFont = {
 	0.24f, 0.24f,
-	{ 1.f, 1.f, 1.f, 0.8f },
+	{ 0.85f, 0.85f, 0.90f, 1.0f },
 	0, 0,
 	DB_MASTER_FONT,
 };
@@ -50,7 +52,7 @@ panel_button_t debriefTitleBack = {
 	"white",
 	NULL,
 	{ 10, 4, 620, 20 },
-	{ 1, 41, 51, 43, 204, 0, 0, 0 },
+	{ 1, 31, 31, 36, 204, 0, 0, 0 }, /* Jaymod-AC: charcoal surface (was green) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -62,7 +64,7 @@ panel_button_t debriefTitleBackBorderLower = {
 	NULL,
 	NULL,
 	{ 10, 24, 620, 200 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -74,7 +76,7 @@ panel_button_t debriefTitleBackLower = {
 	"white",
 	NULL,
 	{ 10, 24, 620, 200 },
-	{ 1, 0, 0, 0, 153, 0, 0, 0 },
+	{ 1, 20, 20, 26, 200, 0, 0, 0 }, /* Jaymod-AC: charcoal bg (was pure black) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -86,7 +88,7 @@ panel_button_t debriefTitleBackBorder = {
 	NULL,
 	NULL,
 	{ 10, 4, 620, 20 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -110,7 +112,7 @@ panel_button_t debriefPlayerHeaderBackBorderLower = {
 	NULL,
 	NULL,
 	{ 10, 260-14, 196, 110 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -122,7 +124,7 @@ panel_button_t debriefPlayerHeaderBackLower = {
 	"white",
 	NULL,
 	{ 10, 260-14, 196, 110 },
-	{ 1, 0, 0, 0, 153, 0, 0, 0 },
+	{ 1, 20, 20, 26, 200, 0, 0, 0 }, /* Jaymod-AC: charcoal bg (was pure black) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -134,7 +136,7 @@ panel_button_t debriefPlayerHeaderBack = {
 	"white",
 	NULL,
 	{ 10, 240-14, 196, 20 },
-	{ 1, 41, 51, 43, 204, 0, 0, 0 },
+	{ 1, 31, 31, 36, 204, 0, 0, 0 }, /* Jaymod-AC: charcoal surface (was green) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -146,7 +148,7 @@ panel_button_t debriefPlayerHeaderBackBorder = {
 	NULL,
 	NULL,
 	{ 10, 240-14, 196, 20 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -162,7 +164,7 @@ panel_button_t debriefPlayerSkillsBackBorderLower = {
 	NULL,
 	NULL,
 	{ 210, 260-14, 80, 110 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -174,7 +176,7 @@ panel_button_t debriefPlayerSkillsBackLower = {
 	"white",
 	NULL,
 	{ 210, 260-14, 80, 110 },
-	{ 1, 0, 0, 0, 153, 0, 0, 0 },
+	{ 1, 20, 20, 26, 200, 0, 0, 0 }, /* Jaymod-AC: charcoal bg (was pure black) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -186,7 +188,7 @@ panel_button_t debriefPlayerSkillsBack = {
 	"white",
 	NULL,
 	{ 210, 240-14, 80, 20 },
-	{ 1, 41, 51, 43, 204, 0, 0, 0 },
+	{ 1, 31, 31, 36, 204, 0, 0, 0 }, /* Jaymod-AC: charcoal surface (was green) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -198,7 +200,7 @@ panel_button_t debriefPlayerSkillsBackBorder = {
 	NULL,
 	NULL,
 	{ 210, 240-14, 80, 20 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,		/* font		*/
 	NULL,					/* keyDown	*/
 	NULL,					/* keyUp	*/
@@ -711,7 +713,7 @@ panel_button_t teamDebriefMapListBackBorderLower = {
 	NULL,
 	NULL,
 	{ 460, 22, 170, 232 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -723,7 +725,7 @@ panel_button_t teamDebriefMapListBackLower = {
 	"white",
 	NULL,
 	{ 460, 22, 170, 232 },
-	{ 1, 0, 0, 0, 153, 0, 0, 0 },
+	{ 1, 20, 20, 26, 200, 0, 0, 0 }, /* Jaymod-AC: charcoal bg (was pure black) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -735,7 +737,7 @@ panel_button_t teamDebriefMapListBackBorder = {
 	NULL,
 	NULL,
 	{ 460, 4, 170, 20 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -747,7 +749,7 @@ panel_button_t teamDebriefMapListBack = {
 	"white",
 	NULL,
 	{ 460, 4, 170, 20 },
-	{ 1, 41, 51, 43, 204, 0, 0, 0 },
+	{ 1, 31, 31, 36, 204, 0, 0, 0 }, /* Jaymod-AC: charcoal surface (was green) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -830,7 +832,7 @@ panel_button_t teamDebriefMapWinnerBackBorderLower = {
 	NULL,
 	NULL,
 	{ 10, 277, 620, 77 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -842,7 +844,7 @@ panel_button_t teamDebriefMapWinnerBackLower = {
 	"white",
 	NULL,
 	{ 10, 277, 620, 77 },
-	{ 1, 0, 0, 0, 153, 0, 0, 0 },
+	{ 1, 20, 20, 26, 200, 0, 0, 0 }, /* Jaymod-AC: charcoal bg (was pure black) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -854,7 +856,7 @@ panel_button_t teamDebriefMapWinnerTextBackBorder = {
 	NULL,
 	NULL,
 	{ 10, 258, 620, 20 },
-	{ 1, 127, 127, 127, 255, 1, 0, 0 },
+	{ 1, 60, 60, 70, 255, 1, 0, 0 }, /* Jaymod-AC: muted gray border (was 50% gray) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -866,7 +868,7 @@ panel_button_t teamDebriefMapWinnerTextBack = {
 	"white",
 	NULL,
 	{ 10, 258, 620, 20 },
-	{ 1, 41, 51, 43, 204, 0, 0, 0 },
+	{ 1, 31, 31, 36, 204, 0, 0, 0 }, /* Jaymod-AC: charcoal surface (was green) */
 	NULL,			/* font		*/
 	NULL,			/* keyDown	*/
 	NULL,			/* keyUp	*/
@@ -2282,11 +2284,13 @@ void CG_TeamDebriefingMapWinner_Draw( panel_button_t* button ) {
 }
 
 void CG_PanelButtonsRender_Button_Ext( rectDef_t* r, const char* text ) {
-	vec4_t clrBdr =	{ 0.1f,		0.1f,	0.1f,	0.5f	};
-	vec4_t clrBck =	{ 0.3f,		0.3f,	0.3f,	0.4f	};
+	/* Jaymod-AC: charcoal theme — see also panel_button_t color rows above. */
+	vec4_t clrBdr =	{ 0.10f,	0.10f,	0.12f,	0.5f	};
+	vec4_t clrBck =	{ 0.18f,	0.18f,	0.22f,	0.4f	};
 	vec4_t clrTxt =	{ 0.6f,		0.6f,	0.6f,	1.0f	};
 
-	vec4_t clrBck_hi = { 0.5f,	0.5f,	0.5f,	0.4f	};
+	/* Jaymod-AC: hover/active uses accent blue tint instead of pale gray. */
+	vec4_t clrBck_hi = { 0.20f,	0.30f,	0.45f,	0.55f	};
 	vec4_t clrTxt_hi = { 0.9f,	0.9f,	0.9f,	1.f		};
 
 	qboolean hilight = BG_CursorInRect( r );
@@ -2305,9 +2309,10 @@ void CG_PanelButtonsRender_Button( panel_button_t* button ) {
 }
 
 void CG_PanelButtonsRender_Window_Ext( rectDef_t* r, const char* text, int align, int innerheight, float fontscale, int yofs ) {
-	vec4_t clrBdr =			{ 0.5f,		0.5f,	0.5f,	0.5f	};
-	vec4_t clrTitleBck =	{ 0.16f,	0.2f,	0.17f,	0.8f	};
-	vec4_t clrBck =			{ 0.0f,		0.0f,	0.0f,	0.8f	};
+	/* Jaymod-AC: charcoal theme — surface/background/muted border. */
+	vec4_t clrBdr =			{ 0.24f,	0.24f,	0.28f,	0.7f	};
+	vec4_t clrTitleBck =	{ 0.12f,	0.12f,	0.14f,	0.85f	};
+	vec4_t clrBck =			{ 0.08f,	0.08f,	0.10f,	0.85f	};
 	vec4_t clrTxtBck =		{ 0.6f,		0.6f,	0.6f,	1.0f	};
 
 	CG_FillRect( r->x, r->y, r->w, r->h, clrBck );
@@ -2480,7 +2485,8 @@ void CG_Debreifing2_Awards_Draw( panel_button_t* button ) {
 
 void CG_Debreifing2_Maps_Draw( panel_button_t* button ) {
 	vec4_t clrTxtBck =		{ 0.6f,		0.6f,	0.6f,	1.0f	};
-	vec4_t clrBck =			{ 0.3f,		0.3f,	0.3f,	0.4f	};
+	/* Jaymod-AC: charcoal mid-bg (was pale gray). */
+	vec4_t clrBck =			{ 0.18f,	0.18f,	0.22f,	0.4f	};
 
 	if( cg_gameType.integer == GT_WOLF_CAMPAIGN ) {
 		float y, w;

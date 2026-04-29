@@ -183,12 +183,14 @@ Registry registry;
 
 namespace builtins {
     About        about;
+    Achievements achievements;
     AdminTest    adminTest;
     Ban          ban;
     BanInfo      banInfo;
     BanList      banList;
     BanUser      banUser;
     CancelVote   cancelVote;
+    Card         card;
     Chicken      chicken;
     CrazyGravity crazygravity;
     CryBaby      crybaby;
@@ -204,6 +206,7 @@ namespace builtins {
     Kick         kick;
     Launch       launch;
     Launcha      launcha;
+    Leaderboard  leaderboard;
     LevAdd       levAdd;
     LevDelete    levDelete;
     LevEdit      levEdit;
@@ -223,8 +226,10 @@ namespace builtins {
     Pause        pause;
     Pip          pip;
     Pop          pop;
+    Profile      profile;
     PutTeam      putTeam;
     Rename       rename;
+    Rep          rep;
     Reset        reset;
     ResetXp      resetXp;
     ResetmyXp    resetmyXp;
@@ -232,6 +237,7 @@ namespace builtins {
     Revive       revive;
     Seen         seen;
     SetLevel     setLevel;
+    SetProfile   setProfile;
     Shake        shake;
     Shuffle      shuffle;
     Slap         slap;

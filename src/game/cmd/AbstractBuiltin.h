@@ -18,12 +18,14 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <game/cmd/About.h>
+#include <game/cmd/Achievements.h>
 #include <game/cmd/AdminTest.h>
 #include <game/cmd/Ban.h>
 #include <game/cmd/BanInfo.h>
 #include <game/cmd/BanList.h>
 #include <game/cmd/BanUser.h>
 #include <game/cmd/CancelVote.h>
+#include <game/cmd/Card.h>
 #include <game/cmd/Chicken.h>
 #include <game/cmd/CrazyGravity.h>
 #include <game/cmd/CryBaby.h>
@@ -39,6 +41,7 @@ private:
 #include <game/cmd/Kick.h>
 #include <game/cmd/Launch.h>
 #include <game/cmd/Launcha.h>
+#include <game/cmd/Leaderboard.h>
 #include <game/cmd/LevAdd.h>
 #include <game/cmd/LevDelete.h>
 #include <game/cmd/LevEdit.h>
@@ -58,8 +61,10 @@ private:
 #include <game/cmd/Pause.h>
 #include <game/cmd/Pip.h>
 #include <game/cmd/Pop.h>
+#include <game/cmd/Profile.h>
 #include <game/cmd/PutTeam.h>
 #include <game/cmd/Rename.h>
+#include <game/cmd/Rep.h>
 #include <game/cmd/Reset.h>
 #include <game/cmd/ResetXp.h>
 #include <game/cmd/ResetmyXp.h>
@@ -67,6 +72,7 @@ private:
 #include <game/cmd/Revive.h>
 #include <game/cmd/Seen.h>
 #include <game/cmd/SetLevel.h>
+#include <game/cmd/SetProfile.h>
 #include <game/cmd/Shake.h>
 #include <game/cmd/Shuffle.h>
 #include <game/cmd/Slap.h>
@@ -95,12 +101,14 @@ private:
 
 namespace builtins {
     extern About        about;
+    extern Achievements achievements;
     extern AdminTest    adminTest;
     extern Ban          ban;
     extern BanInfo      banInfo;
     extern BanList      banList;
     extern BanUser      banUser;
     extern CancelVote   cancelVote;
+    extern Card         card;
     extern CrazyGravity crazygravity;
     extern CryBaby      crybaby;
     extern DbLoad       dbLoad;
@@ -115,6 +123,7 @@ namespace builtins {
     extern Kick         kick;
     extern Launch       launch;
     extern Launcha      launcha;
+    extern Leaderboard  leaderboard;
     extern LevAdd       levAdd;
     extern LevDelete    levDelete;
     extern LevEdit      levEdit;
@@ -134,8 +143,10 @@ namespace builtins {
     extern Pause        pause;
     extern Pip          pip;
     extern Pop          pop;;
+    extern Profile      profile;
     extern PutTeam      putTeam;
     extern Rename       rename;
+    extern Rep          rep;
     extern Reset        reset;
     extern ResetXp      resetXp;
     extern ResetmyXp    resetmyXp;
@@ -143,6 +154,7 @@ namespace builtins {
     extern Revive       revive;
     extern Seen         seen;
     extern SetLevel     setLevel;
+    extern SetProfile   setProfile;
     extern Shake        shake;
     extern Shuffle      shuffle;
     extern Slap         slap;

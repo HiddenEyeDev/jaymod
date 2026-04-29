@@ -458,7 +458,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\g_achievements.h"
+					>
+				</File>
+				<File
 					RelativePath=".\g_etbot_interface.h"
+					>
+				</File>
+				<File
+					RelativePath=".\g_geoip.h"
 					>
 				</File>
 				<File
@@ -471,6 +479,10 @@
 				</File>
 				<File
 					RelativePath=".\g_molotov.h"
+					>
+				</File>
+				<File
+					RelativePath=".\g_profile.h"
 					>
 				</File>
 				<File
@@ -565,7 +577,19 @@
 						>
 					</File>
 					<File
+						RelativePath=".\cmd\Achievements.h"
+						>
+					</File>
+					<File
 						RelativePath=".\cmd\AdminTest.h"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Card.h"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Rep.h"
 						>
 					</File>
 					<File
@@ -653,6 +677,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\cmd\Leaderboard.h"
+						>
+					</File>
+					<File
 						RelativePath=".\cmd\LevAdd.h"
 						>
 					</File>
@@ -729,6 +757,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\cmd\Profile.h"
+						>
+					</File>
+					<File
 						RelativePath=".\cmd\public.h"
 						>
 					</File>
@@ -766,6 +798,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\SetLevel.h"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\SetProfile.h"
 						>
 					</File>
 					<File
@@ -1142,6 +1178,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\g_achievements.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\g_active.cpp"
 					>
 				</File>
@@ -1183,6 +1223,10 @@
 				</File>
 				<File
 					RelativePath=".\g_fireteams.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\g_geoip.cpp"
 					>
 				</File>
 				<File
@@ -1247,6 +1291,10 @@
 				</File>
 				<File
 					RelativePath=".\g_multiview.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\g_profile.cpp"
 					>
 				</File>
 				<File
@@ -1409,6 +1457,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\cmd\Achievements.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\cmd\AdminTest.cpp"
 						>
 					</File>
@@ -1430,6 +1482,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\CancelVote.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Card.cpp"
 						>
 					</File>
 					<File
@@ -1490,6 +1546,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\Launcha.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Leaderboard.cpp"
 						>
 					</File>
 					<File
@@ -1569,11 +1629,19 @@
 						>
 					</File>
 					<File
+						RelativePath=".\cmd\Profile.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\cmd\PutTeam.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\cmd\Rename.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Rep.cpp"
 						>
 					</File>
 					<File
@@ -1602,6 +1670,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\SetLevel.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\SetProfile.cpp"
 						>
 					</File>
 					<File

@@ -1,5 +1,8 @@
 #include <bgame/impl.h>
 #include <omnibot/et/g_etbot_interface.h>
+#include "g_geoip.h"
+#include "g_profile.h"
+#include "g_achievements.h"
 
 // g_client.c -- client functions that don't happen every frame
 
@@ -2170,6 +2173,83 @@ ClientConnect( string& outmsg, int clientNum, qboolean firstTime, qboolean isBot
 	if ( firstTime )
 	{
 		trap_SendServerCommand( -1, va("cpm \"%s" S_COLOR_WHITE " connected\n\"", client->pers.netname) );
+
+		// Jaymod-AC: build the connect-info chat string here, but defer the
+		// broadcast to ClientBegin — at this point the joining player is still
+		// CON_CONNECTING and would miss their own message.
+		client->pers.connectAnnouncePending = qfalse;
+		client->pers.connectAnnounceMsg[0] = '\0';
+		if ( g_announceConnect.integer && !isBot && !( ent->r.svFlags & SVF_BOT ) ) {
+			char rawIP[64];
+			Q_strncpyz( rawIP, Info_ValueForKey( userinfo, "ip" ), sizeof( rawIP ) );
+
+			// Mask last two octets, drop the :port.  e.g. "120.0.1.5:27960" -> "120.0.x.x"
+			char displayIP[64];
+			{
+				char ipOnly[64];
+				Q_strncpyz( ipOnly, rawIP, sizeof( ipOnly ) );
+				char* portSep = strchr( ipOnly, ':' );
+				if ( portSep ) *portSep = '\0';
+
+				int a, b, c, d;
+				if ( sscanf( ipOnly, "%d.%d.%d.%d", &a, &b, &c, &d ) == 4 ) {
+					Com_sprintf( displayIP, sizeof( displayIP ), "%d.%d.x.x", a, b );
+				} else {
+					// Non-IPv4 (e.g. "localhost") — show as-is, no mask.
+					Q_strncpyz( displayIP, ipOnly, sizeof( displayIP ) );
+				}
+			}
+
+			// Resolve client version. Vanilla ET sets "cg_etVersion"; ET:Legacy
+			// (recent builds) sets "cl_etVersion" engine-side, which carries the
+			// "ET Legacy ..." label — prefer it when present so legacy clients
+			// are clearly identified.
+			const char* clientVersion = Info_ValueForKey( userinfo, "cl_etVersion" );
+			if ( !clientVersion || !*clientVersion ) {
+				clientVersion = Info_ValueForKey( userinfo, "cg_etVersion" );
+			}
+			if ( !clientVersion || !*clientVersion ) clientVersion = "unknown";
+
+			// Country lookup via embedded MaxMind GeoIP.dat reader.
+			// Returns "Unknown" if g_geoipFile isn't loaded or the address
+			// can't be resolved (e.g. localhost / private ranges).
+			const char* country = G_GeoIP_CountryByIP( rawIP );
+
+			Com_sprintf( client->pers.connectAnnounceMsg,
+				sizeof( client->pers.connectAnnounceMsg ),
+				"chat \"^7Jaymod: ^3%s ^7connected with IP [^5%s^7] (^5%s^7) Client Version: [^5%s^7]\"",
+				client->pers.netname, displayIP, country, clientVersion );
+			client->pers.connectAnnouncePending = qtrue;
+		}
+
+		// Jaymod-AC: stamp firstSeen + anchor stats accrual on first-time connect.
+		G_Profile_OnConnect( clientNum );
+
+		// Jaymod-AC: welcome-back announcement for returning users.
+		//
+		// User.timestamp is updated on disconnect / session-write, so during
+		// ClientConnect it still holds the player's previous "last seen" time.
+		// We capture it here and defer the broadcast to ClientBegin so the
+		// joining player sees their own message.
+		client->pers.welcomeBackPending = qfalse;
+		client->pers.welcomeBackMsg[0] = '\0';
+		if ( g_welcomeBack.integer && !isBot && !( ent->r.svFlags & SVF_BOT ) && !user.fakeguid ) {
+			const time_t lastSeen = user.timestamp;
+			const time_t now      = time( NULL );
+			const int    threshold = g_welcomeBackThreshold.integer;
+
+			// Only announce if we have a real previous timestamp AND the
+			// player has been away long enough to make the message meaningful
+			// (avoids spam on quick reconnects).
+			if ( lastSeen > 0 && (now - lastSeen) >= threshold ) {
+				const string ago = str::toStringSecondsRemaining( now - lastSeen, true );
+				Com_sprintf( client->pers.welcomeBackMsg,
+					sizeof( client->pers.welcomeBackMsg ),
+					"chat \"^7Welcome back, ^3%s ^7— last seen ^5%s ^7ago.\"",
+					client->pers.netname, ago.c_str() );
+				client->pers.welcomeBackPending = qtrue;
+			}
+		}
 	}
 
 	// Jaybird
@@ -2368,6 +2448,22 @@ void ClientBegin( int clientNum )
 	// OSP
 
 	g_clientObjects[clientNum].notifyBegin();
+
+	// Jaymod-AC: deferred connect-info broadcast. The string was built in
+	// ClientConnect when the client was still CON_CONNECTING; broadcast it now
+	// so the joining player can also see their own message.
+	if ( client->pers.connectAnnouncePending && client->pers.connectAnnounceMsg[0] ) {
+		AP( client->pers.connectAnnounceMsg );
+		client->pers.connectAnnouncePending = qfalse;
+		client->pers.connectAnnounceMsg[0] = '\0';
+	}
+
+	// Jaymod-AC: deferred welcome-back broadcast for returning users.
+	if ( client->pers.welcomeBackPending && client->pers.welcomeBackMsg[0] ) {
+		AP( client->pers.welcomeBackMsg );
+		client->pers.welcomeBackPending = qfalse;
+		client->pers.welcomeBackMsg[0] = '\0';
+	}
 }
 
 gentity_t *SelectSpawnPointFromList( char *list, vec3_t spawn_origin, vec3_t spawn_angles )
@@ -2459,6 +2555,9 @@ void ClientSpawn( gentity_t *ent, qboolean revived )
 
 	// Jaybird - reset kill spree counter
 	ent->client->pers.killspreekills = 0;
+
+	// Jaymod-AC: reset multi-kill window for the new life.
+	Ach::onSpawn( index );
 
 	client->pers.lastSpawnTime = level.time;
 	client->pers.lastBattleSenseBonusTime = level.timeCurrent;
@@ -2816,6 +2915,10 @@ void ClientDisconnect( int clientNum ) {
 	//////////////////////////////////////////////////////////////////////////
 	Bot_Event_ClientDisConnected(clientNum);
 	//////////////////////////////////////////////////////////////////////////
+
+	// Jaymod-AC: fold any pending stats deltas + remaining playtime into
+	// the persistent User record before the connection goes away.
+	G_Profile_Accrue( clientNum );
 
 	// Update client User record
     connectedUsers[clientNum]->timestamp = time( NULL );

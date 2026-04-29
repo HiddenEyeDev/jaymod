@@ -446,3 +446,44 @@
 #define RL_REFEREE				1
 #define RL_RCON					2
 // -OSP
+
+// ===================================================================
+// Modern UI Theme - Layout & Spacing Constants
+// ===================================================================
+
+// Spacing grid (8px base unit)
+#define THEME_SPACING_XS		2
+#define THEME_SPACING_SM		4
+#define THEME_SPACING_MD		8
+#define THEME_SPACING_LG		12
+#define THEME_SPACING_XL		16
+#define THEME_SPACING_XXL		24
+
+// Panel padding (inside panels)
+#define THEME_PAD_PANEL			10
+#define THEME_PAD_PANEL_TOP		8
+
+// Button dimensions
+#define THEME_BTN_HEIGHT		22
+#define THEME_BTN_HEIGHT_LG		28
+#define THEME_BTN_SPACING		4
+#define THEME_BTN_TEXT_SCALE	.22
+#define THEME_BTN_TEXT_SCALE_LG	.28
+
+// Title bar
+#define THEME_TITLE_HEIGHT		26
+#define THEME_TITLE_TEXT_SCALE	.35
+#define THEME_TITLE_ACCENT_H	1
+
+// Subwindow title
+#define THEME_SUBTITLE_HEIGHT	14
+#define THEME_SUBTITLE_SCALE	.19
+
+// Widget text
+#define THEME_WIDGET_SCALE		.20
+#define THEME_LABEL_SCALE		.20
+
+// Standard font for UI widgets
+#define THEME_FONT_TITLE		UI_FONT_ARIBLK_27
+#define THEME_FONT_BODY			UI_FONT_COURBD_21
+#define THEME_FONT_BTN			UI_FONT_COURBD_30

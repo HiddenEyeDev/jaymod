@@ -1,6 +1,6 @@
 # Jaymod
 
-This is the source for the last release of Jaymod, which is version 2.0.0.
+This is the source for the last release of Jaymod, which is version 2.3.0.
 
 # Compiling
 
