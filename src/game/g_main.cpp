@@ -3,6 +3,7 @@
 #include "g_geoip.h"
 #include "g_achievements.h"
 #include "g_profile.h"
+#include "g_dailychallenges.h"
 
 level_locals_t	level;
 
@@ -1836,6 +1837,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
     adminLog.init();
     G_GeoIP_Init();
     Ach::onLevelInit();
+    Daily::onLevelInit();
 
     // Load users databases
 	levelDB.load();

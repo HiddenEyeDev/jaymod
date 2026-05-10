@@ -92,6 +92,12 @@ public:
     static const int ACH_MAX = 64;
     int    achCount[ ACH_MAX ];
 
+    // Wall-clock at which each achievement was FIRST unlocked.  0 = locked
+    // or pre-existing record from before this field was added.  For
+    // repeatable achievements this is the first-time date — subsequent
+    // increments don't update it.
+    time_t achEarnedAt[ ACH_MAX ];
+
     // Number of distinct achievements with achCount[i] > 0.
     int    achievementsUnlocked() const;
 
@@ -107,6 +113,15 @@ public:
     int  statRank;          // cached rank tier; 0 or 1 means "fresh"
     int  statRepPositive;   // lifetime up-votes received
     int  statRepNegative;   // lifetime down-votes received
+    int  statDailyXp;       // lifetime XP earned from completed daily challenges
+
+    /**************************************************************************
+     * Jaymod-AC: rotating daily challenges (Phase 6).  Reset at UTC midnight
+     * (when Daily::dayIndex() advances) by Daily::rotateIfNeeded().
+     */
+    int  dailyDayIndex;       // dayIndex this data is for; 0 = unset
+    int  dailyProgress[8];    // per-challenge counter, sized for Daily::NUM
+    int  dailyCompleted;      // bitmask: bit N set when challenge N done today
 
     /**************************************************************************
      * Jaymod-AC: customization (Phase 5).  Set via `!setprofile`.  Empty by

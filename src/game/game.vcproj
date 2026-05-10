@@ -462,6 +462,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\g_dailychallenges.h"
+					>
+				</File>
+				<File
 					RelativePath=".\g_etbot_interface.h"
 					>
 				</File>
@@ -622,6 +626,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\CryBaby.h"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Daily.h"
 						>
 					</File>
 					<File
@@ -1186,6 +1194,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\g_dailychallenges.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\g_alarm.cpp"
 					>
 				</File>
@@ -1498,6 +1510,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\CryBaby.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Daily.cpp"
 						>
 					</File>
 					<File

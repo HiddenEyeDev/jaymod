@@ -194,6 +194,7 @@ namespace builtins {
     Chicken      chicken;
     CrazyGravity crazygravity;
     CryBaby      crybaby;
+    Daily        daily;
     DbLoad       dbLoad;
     DbSave       dbSave;
     Disorient    disorient;

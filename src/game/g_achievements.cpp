@@ -3,6 +3,7 @@
 #include <bgame/impl.h>
 #include "g_achievements.h"
 #include "g_profile.h"
+#include "g_dailychallenges.h"
 
 namespace Ach {
 
@@ -98,7 +99,13 @@ void award( gentity_t* ent, Id id ) {
     if (!def.repeatable && counter > 0)
         return;  // already unlocked — silent
 
+    // Stamp the first-unlock wall-clock once.  Repeatable achievements
+    // keep the FIRST unlock date — subsequent earnings don't update it.
+    const bool firstUnlock = (counter == 0);
     counter++;
+    if (firstUnlock) {
+        user->achEarnedAt[id] = time( NULL );
+    }
 
     // Broadcast.  Non-repeatable: "unlocked".  Repeatable: "[Nx] earned".
     if (def.repeatable) {
@@ -174,6 +181,12 @@ void onKill( gentity_t* attacker, gentity_t* victim, int /*mod*/ ) {
             case 5: award( attacker, MEGA_KILL );    break;
             // 6+ in one window: stay at Mega tier; don't re-broadcast.
         }
+
+        // Daily challenge: "land a multi-kill (3+)" — fire on the EXACT
+        // transition to 3 so we don't double-fire across the same window.
+        if (cl->pers.multiKillCount == 3) {
+            Daily::onProgress( attacker->s.number, Daily::M_MULTIKILL, 1 );
+        }
     }
 
     // Streak achievements (currentStreak was just incremented in
@@ -187,6 +200,12 @@ void onKill( gentity_t* attacker, gentity_t* victim, int /*mod*/ ) {
         case 30: awardOnce( attacker, WICKED_SICK );   break;
         // For values > 30 or non-milestone counts, nothing to do; the
         // !profile longest-streak number speaks for itself.
+    }
+
+    // Daily challenge: "hit a 5-kill streak today" — fires on the exact
+    // transition so we don't re-fire on every kill above 5.
+    if (s == 5) {
+        Daily::onProgress( attacker->s.number, Daily::M_STREAK_HIT, 1 );
     }
 }
 

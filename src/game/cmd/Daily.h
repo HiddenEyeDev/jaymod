@@ -1,0 +1,18 @@
+#ifndef GAME_CMD_DAILY_H
+#define GAME_CMD_DAILY_H
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Daily : public AbstractBuiltin
+{
+protected:
+    PostAction doExecute( Context& );
+
+public:
+    Daily();
+    ~Daily();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // GAME_CMD_DAILY_H

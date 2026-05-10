@@ -855,6 +855,8 @@ typedef struct {
 	int			statHeadshotsSnap;    // last sess.headshots
 	int			statShotsFiredSnap;   // last sum(aWeaponStats[].atts)
 	int			statShotsHitSnap;     // last sum(aWeaponStats[].hits)
+	int			statRevivesSnap;      // last sess.revives        (Daily metrics)
+	int			statDamageSnap;       // last sess.damage_given   (Daily metrics)
 
 	// Multi-kill window (achievements).  Sliding 4-second window: each kill
 	// while level.time < multiKillExpireTime extends the streak; otherwise
@@ -2700,6 +2702,7 @@ qboolean G_LandmineSnapshotCallback( int entityNum, int clientNum );
 
 #include <game/etpro_mdx.h>
 #include <game/g_achievements.h>
+#include <game/g_dailychallenges.h>
 #include <game/g_jaymod.h>
 #include <game/g_molotov.h>
 

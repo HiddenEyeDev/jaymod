@@ -29,6 +29,7 @@ private:
 #include <game/cmd/Chicken.h>
 #include <game/cmd/CrazyGravity.h>
 #include <game/cmd/CryBaby.h>
+#include <game/cmd/Daily.h>
 #include <game/cmd/DbLoad.h>
 #include <game/cmd/DbSave.h>
 #include <game/cmd/Disorient.h>
@@ -111,6 +112,7 @@ namespace builtins {
     extern Card         card;
     extern CrazyGravity crazygravity;
     extern CryBaby      crybaby;
+    extern Daily        daily;
     extern DbLoad       dbLoad;
     extern DbSave       dbSave;
     extern Disorient    disorient;

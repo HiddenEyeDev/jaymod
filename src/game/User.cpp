@@ -22,6 +22,9 @@ User::User( )
     , statRank         ( 1 )
     , statRepPositive  ( 0 )
     , statRepNegative  ( 0 )
+    , statDailyXp      ( 0 )
+    , dailyDayIndex    ( 0 )
+    , dailyCompleted   ( 0 )
     , muted         ( false )
     , muteTime      ( 0 )
     , muteExpiry    ( 0 )
@@ -29,8 +32,10 @@ User::User( )
     , banTime       ( 0 )
     , banExpiry     ( 0 )
 {
-    memset( xpSkills,  0, sizeof(xpSkills) );
-    memset( achCount,  0, sizeof(achCount) );
+    memset( xpSkills,    0, sizeof(xpSkills) );
+    memset( achCount,    0, sizeof(achCount) );
+    memset( achEarnedAt, 0, sizeof(achEarnedAt) );
+    memset( dailyProgress, 0, sizeof(dailyProgress) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,6 +58,9 @@ User::User( bool console )
     , statRank         ( 1 )
     , statRepPositive  ( 0 )
     , statRepNegative  ( 0 )
+    , statDailyXp      ( 0 )
+    , dailyDayIndex    ( 0 )
+    , dailyCompleted   ( 0 )
     , muted         ( false )
     , muteTime      ( 0 )
     , muteExpiry    ( 0 )
@@ -60,8 +68,10 @@ User::User( bool console )
     , banTime       ( 0 )
     , banExpiry     ( 0 )
 {
-    memset( xpSkills, 0, sizeof(xpSkills) );
-    memset( achCount, 0, sizeof(achCount) );
+    memset( xpSkills,    0, sizeof(xpSkills) );
+    memset( achCount,    0, sizeof(achCount) );
+    memset( achEarnedAt, 0, sizeof(achEarnedAt) );
+    memset( dailyProgress, 0, sizeof(dailyProgress) );
 
     if (console) {
         authLevel = Level::NUM_MAX;
@@ -202,6 +212,34 @@ User::decode( map<string,string>& data )
         if (statRepNegative < 0)   statRepNegative = 0;
     }
 
+    // Daily challenges + lifetime daily XP (Phase 6).  Progress is wiped
+    // automatically by Daily::rotateIfNeeded when day rolls over, so it's
+    // safe to load whatever was on disk.
+    {
+        stringstream pss;
+        pss.str(""); pss.clear(); pss << data["statdailyxp"];     pss >> statDailyXp;
+        pss.str(""); pss.clear(); pss << data["dailydayindex"];   pss >> dailyDayIndex;
+        pss.str(""); pss.clear(); pss << data["dailycompleted"];  pss >> dailyCompleted;
+
+        if (statDailyXp < 0)    statDailyXp = 0;
+        if (dailyDayIndex < 0)  dailyDayIndex = 0;
+        if (dailyCompleted < 0) dailyCompleted = 0;
+
+        memset( dailyProgress, 0, sizeof(dailyProgress) );
+        const int N = (int)(sizeof(dailyProgress)/sizeof(dailyProgress[0]));
+        for (int i = 0; i < N; i++) {
+            char buf[32];
+            Com_sprintf( buf, sizeof(buf), "dailyprogress.%d", i );
+            map<string,string>::iterator it = data.find( buf );
+            if (it == data.end() || it->second.empty()) continue;
+            stringstream pss2;
+            pss2 << it->second;
+            int v = 0; pss2 >> v;
+            if (v < 0) v = 0;
+            dailyProgress[i] = v;
+        }
+    }
+
     // Customization (Phase 5).  Plain strings — censorship and length caps
     // are enforced at SET time (see cmd::SetProfile), but defensively trim
     // here too against hand-edited user.db entries.
@@ -216,22 +254,36 @@ User::decode( map<string,string>& data )
     // Achievements: decode via named keys so storage is robust against
     // enum reordering / inserts.
     {
-        memset( achCount, 0, sizeof(achCount) );
+        memset( achCount,    0, sizeof(achCount) );
+        memset( achEarnedAt, 0, sizeof(achEarnedAt) );
 
         for (int i = 0; i < (int)Ach::NUM && i < ACH_MAX; i++) {
-            string key = "ach.";
-            key += Ach::kDefs[i].key;
-            str::toLower( key );
+            string base = "ach.";
+            base += Ach::kDefs[i].key;
+            str::toLower( base );
 
-            map<string,string>::iterator it = data.find( key );
-            if (it == data.end() || it->second.empty()) continue;
+            // count
+            map<string,string>::iterator it = data.find( base );
+            if (it != data.end() && !it->second.empty()) {
+                stringstream pss;
+                pss << it->second;
+                int v = 0;
+                pss >> v;
+                if (v < 0) v = 0;
+                achCount[i] = v;
+            }
 
-            stringstream pss;
-            pss << it->second;
-            int v = 0;
-            pss >> v;
-            if (v < 0) v = 0;
-            achCount[i] = v;
+            // earned-at timestamp (added after the count field; older save
+            // files will simply have a 0 here — valid sentinel for "unknown")
+            it = data.find( base + ".at" );
+            if (it != data.end() && !it->second.empty()) {
+                stringstream pss;
+                pss << it->second;
+                long long t = 0;
+                pss >> t;
+                if (t < 0) t = 0;
+                achEarnedAt[i] = (time_t)t;
+            }
         }
     }
 
@@ -466,10 +518,31 @@ User::encode( ostream& out, int recnum )
     if (!customSignature.empty()) out << '\n' << "customSignature = " << customSignature;
     if (!customClanTag.empty())   out << '\n' << "customClanTag = "   << customClanTag;
 
+    // Daily challenges (Phase 6).  Only emit non-zero rows.
+    if (statDailyXp)    out << '\n' << "statDailyXp = "    << statDailyXp;
+    if (dailyDayIndex)  out << '\n' << "dailyDayIndex = "  << dailyDayIndex;
+    if (dailyCompleted) out << '\n' << "dailyCompleted = " << dailyCompleted;
+    {
+        const int N = (int)(sizeof(dailyProgress)/sizeof(dailyProgress[0]));
+        for (int i = 0; i < N; i++) {
+            if (dailyProgress[i] > 0)
+                out << '\n' << "dailyProgress." << i << " = " << dailyProgress[i];
+        }
+    }
+
     // Achievements: only emit non-zero rows so the file stays compact.
+    // Each unlocked entry also gets a `.at` line with the wall-clock at
+    // first unlock, displayed by `!achievements`.
     for (int i = 0; i < (int)Ach::NUM && i < ACH_MAX; i++) {
-        if (achCount[i] > 0)
+        if (achCount[i] > 0) {
             out << '\n' << "ach." << Ach::kDefs[i].key << " = " << achCount[i];
+            if (achEarnedAt[i] > 0) {
+                char fsbuf[32];
+                strftime( fsbuf, sizeof(fsbuf), "%Y-%m-%d", localtime( &achEarnedAt[i] ));
+                out << '\n' << "ach." << Ach::kDefs[i].key << ".at = "
+                    << (long long)achEarnedAt[i] << " # " << fsbuf;
+            }
+        }
     }
 
 #if defined( JAYMOD_USERDB_DEBUG )
@@ -677,12 +750,17 @@ User::operator=( const User& ref )
     statRank          = ref.statRank;
     statRepPositive   = ref.statRepPositive;
     statRepNegative   = ref.statRepNegative;
+    statDailyXp       = ref.statDailyXp;
+    dailyDayIndex     = ref.dailyDayIndex;
+    dailyCompleted    = ref.dailyCompleted;
+    memcpy( dailyProgress, ref.dailyProgress, sizeof(dailyProgress) );
     customTitle       = ref.customTitle;
     customSignature   = ref.customSignature;
     customClanTag     = ref.customClanTag;
 
-    memcpy( xpSkills, ref.xpSkills, sizeof(xpSkills) );
-    memcpy( achCount, ref.achCount, sizeof(achCount) );
+    memcpy( xpSkills,    ref.xpSkills,    sizeof(xpSkills) );
+    memcpy( achCount,    ref.achCount,    sizeof(achCount) );
+    memcpy( achEarnedAt, ref.achEarnedAt, sizeof(achEarnedAt) );
 
     muted          = ref.muted;
     muteTime       = ref.muteTime;
@@ -808,10 +886,11 @@ User::rankForXp( int xp )
 //   -  5 XP per headshot kill (in addition to the base kill XP)
 //   - 50 XP per non-repeatable achievement unlocked
 //   - 10 XP per repeatable achievement increment
+//   - daily-challenge bonuses, accumulated in statDailyXp by Daily::onProgress
 int
 User::computeXp() const
 {
-    int xp = statKills * 10 + statHeadshots * 5;
+    int xp = statKills * 10 + statHeadshots * 5 + statDailyXp;
 
     for (int i = 0; i < (int)Ach::NUM && i < ACH_MAX; i++) {
         const int n = achCount[i];

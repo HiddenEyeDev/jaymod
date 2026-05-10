@@ -3,6 +3,7 @@
 #include <bgame/impl.h>
 #include "g_profile.h"
 #include "g_achievements.h"
+#include "g_dailychallenges.h"
 
 namespace {
 
@@ -63,6 +64,14 @@ G_Profile_OnConnect( int clientNum )
     sumWeaponStats( cl, atts, hits );
     cl->pers.statShotsFiredSnap = atts;
     cl->pers.statShotsHitSnap   = hits;
+
+    // Daily-challenge snapshots: same pattern as kill/HS counters.
+    cl->pers.statRevivesSnap = cl->sess.revives;
+    cl->pers.statDamageSnap  = cl->sess.damage_given;
+
+    // Force the day-rollover check up front so we don't carry stale
+    // dailyProgress into a fresh session.
+    Daily::rotateIfNeeded( clientNum );
 }
 
 // ---------------------------------------------------------------------------
@@ -108,12 +117,14 @@ G_Profile_Accrue( int clientNum )
     // Playtime
     const time_t now    = time( NULL );
     const time_t anchor = cl->pers.statsAccrueAnchor;
+    int playtimeDelta = 0;
     if (anchor > 0 && now > anchor) {
         // Cap absurd deltas (e.g. wall-clock jump) at 24h to avoid corrupt
         // playtime numbers from system time changes.
         time_t delta = now - anchor;
         if (delta > 86400) delta = 86400;
-        user->statPlaytimeSecs += (int)delta;
+        playtimeDelta = (int)delta;
+        user->statPlaytimeSecs += playtimeDelta;
     }
     cl->pers.statsAccrueAnchor = now;
 
@@ -142,6 +153,18 @@ G_Profile_Accrue( int clientNum )
 
     cl->pers.statShotsFiredSnap = atts;
     cl->pers.statShotsHitSnap   = hits;
+
+    // Daily metrics: revives, damage, and the deltas we already computed.
+    const int dRevives = (int)cl->sess.revives      - cl->pers.statRevivesSnap;
+    const int dDamage  = (int)cl->sess.damage_given - cl->pers.statDamageSnap;
+    cl->pers.statRevivesSnap = (int)cl->sess.revives;
+    cl->pers.statDamageSnap  = (int)cl->sess.damage_given;
+
+    if (dKills     > 0) Daily::onProgress( clientNum, Daily::M_KILL,     dKills     );
+    if (dHeadshots > 0) Daily::onProgress( clientNum, Daily::M_HEADSHOT, dHeadshots );
+    if (dRevives   > 0) Daily::onProgress( clientNum, Daily::M_REVIVE,   dRevives   );
+    if (dDamage    > 0) Daily::onProgress( clientNum, Daily::M_DAMAGE,   dDamage    );
+    if (playtimeDelta > 0) Daily::onProgress( clientNum, Daily::M_PLAYTIME, playtimeDelta );
 
     // Re-evaluate stat-threshold achievements now that lifetime totals
     // have been bumped.  Idempotent — already-unlocked entries are skipped.

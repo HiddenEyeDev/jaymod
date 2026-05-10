@@ -146,6 +146,7 @@
     <ClCompile Include="etpro_mdx.cpp" />
     <ClCompile Include="g_achievements.cpp" />
     <ClCompile Include="g_active.cpp" />
+    <ClCompile Include="g_dailychallenges.cpp" />
     <ClCompile Include="g_alarm.cpp" />
     <ClCompile Include="g_antilag.cpp" />
     <ClCompile Include="g_buddy_list.cpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="cmd\Chicken.cpp" />
     <ClCompile Include="cmd\CrazyGravity.cpp" />
     <ClCompile Include="cmd\CryBaby.cpp" />
+    <ClCompile Include="cmd\Daily.cpp" />
     <ClCompile Include="cmd\DbLoad.cpp" />
     <ClCompile Include="cmd\DbSave.cpp" />
     <ClCompile Include="cmd\Disorient.cpp" />
@@ -357,6 +359,7 @@
     <ClInclude Include="etpro_mdx.h" />
     <ClInclude Include="etpro_mdx_lut.h" />
     <ClInclude Include="g_achievements.h" />
+    <ClInclude Include="g_dailychallenges.h" />
     <ClInclude Include="g_etbot_interface.h" />
     <ClInclude Include="g_geoip.h" />
     <ClInclude Include="g_jaymod.h" />
@@ -387,6 +390,7 @@
     <ClInclude Include="cmd\AbstractBuiltin.h" />
     <ClInclude Include="cmd\Achievements.h" />
     <ClInclude Include="cmd\Card.h" />
+    <ClInclude Include="cmd\Daily.h" />
     <ClInclude Include="cmd\Rep.h" />
     <ClInclude Include="cmd\SetProfile.h" />
     <ClInclude Include="cmd\AbstractCommand.h" />

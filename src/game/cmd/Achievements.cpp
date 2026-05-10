@@ -89,9 +89,9 @@ Achievements::doExecute( Context& txt )
         const int       n   = user->achCount[i];
 
         // Status cell:
-        //   "[x N]"  for repeatable with N earnings
-        //   "[ +1 ]"  for unlocked non-repeatable
-        //   "[ ?? ]"  for locked
+        //   "[Nx]"  for repeatable with N earnings
+        //   "[ x]"  for unlocked non-repeatable
+        //   "[  ]"  for locked
         char statusBuf[12];
         if (n <= 0) {
             Q_strncpyz( statusBuf, "[  ]", sizeof(statusBuf) );
@@ -99,6 +99,16 @@ Achievements::doExecute( Context& txt )
             Com_sprintf( statusBuf, sizeof(statusBuf), "[%dx]", n );
         } else {
             Q_strncpyz( statusBuf, "[ x]", sizeof(statusBuf) );
+        }
+
+        // Earned date (only shown when unlocked AND timestamp was recorded —
+        // pre-existing achievements from before the .at field was added
+        // simply won't have a date).
+        char dateBuf[16];
+        dateBuf[0] = '\0';
+        if (n > 0 && user->achEarnedAt[i] > 0) {
+            time_t t = user->achEarnedAt[i];
+            strftime( dateBuf, sizeof(dateBuf), "%Y-%m-%d", localtime( &t ));
         }
 
         // Color the title differently when locked vs unlocked so the eye
@@ -109,6 +119,9 @@ Achievements::doExecute( Context& txt )
         buf << '\n' << colStatus( statusBuf ) << ' '
             << titleColor << colTitle( def.title )
             << "^7" << def.descr;
+
+        if (dateBuf[0])
+            buf << "  ^8(" << dateBuf << "^8)^7";
     }
 
     print( txt._client, buf );
