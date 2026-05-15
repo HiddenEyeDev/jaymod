@@ -3,6 +3,7 @@
 #include "g_geoip.h"
 #include "g_profile.h"
 #include "g_achievements.h"
+#include "g_anticheat.h"
 
 // g_client.c -- client functions that don't happen every frame
 
@@ -2225,6 +2226,10 @@ ClientConnect( string& outmsg, int clientNum, qboolean firstTime, qboolean isBot
 		// Jaymod-AC: stamp firstSeen + anchor stats accrual on first-time connect.
 		G_Profile_OnConnect( clientNum );
 
+		// Jaymod-AC: register client for AC queries (handshake fires after a
+		// short delay so the client has time to finish loading).
+		AC::onClientConnect( clientNum );
+
 		// Jaymod-AC: welcome-back announcement for returning users.
 		//
 		// User.timestamp is updated on disconnect / session-write, so during
@@ -2919,6 +2924,9 @@ void ClientDisconnect( int clientNum ) {
 	// Jaymod-AC: fold any pending stats deltas + remaining playtime into
 	// the persistent User record before the connection goes away.
 	G_Profile_Accrue( clientNum );
+
+	// Jaymod-AC: drop AC tracking state for this slot.
+	AC::onClientDisconnect( clientNum );
 
 	// Update client User record
     connectedUsers[clientNum]->timestamp = time( NULL );

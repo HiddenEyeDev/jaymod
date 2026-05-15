@@ -65,7 +65,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;iphlpapi.lib;base.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;iphlpapi.lib;psapi.lib;base.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>..\Debug\cgame_mp_x86.dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -100,7 +100,7 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;iphlpapi.lib;base.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;iphlpapi.lib;psapi.lib;base.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>..\Release\cgame_mp_x86.dll</OutputFile>
       <ModuleDefinitionFile>.\cgame.def</ModuleDefinitionFile>
@@ -124,6 +124,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="CBulletVolume.cpp" />
+    <ClCompile Include="cg_anticheat.cpp" />
     <ClCompile Include="cg_atmospheric.cpp" />
     <ClCompile Include="cg_character.cpp" />
     <ClCompile Include="cg_commandmap.cpp" />
@@ -214,6 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBulletVolume.h" />
+    <ClInclude Include="cg_anticheat.h" />
     <ClInclude Include="cg_local.h" />
     <ClInclude Include="cg_molotov.h" />
     <ClInclude Include="cg_public.h" />

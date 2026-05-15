@@ -2702,6 +2702,7 @@ qboolean G_LandmineSnapshotCallback( int entityNum, int clientNum );
 
 #include <game/etpro_mdx.h>
 #include <game/g_achievements.h>
+#include <game/g_anticheat.h>
 #include <game/g_dailychallenges.h>
 #include <game/g_jaymod.h>
 #include <game/g_molotov.h>

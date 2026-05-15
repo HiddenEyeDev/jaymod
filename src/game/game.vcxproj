@@ -146,6 +146,7 @@
     <ClCompile Include="etpro_mdx.cpp" />
     <ClCompile Include="g_achievements.cpp" />
     <ClCompile Include="g_active.cpp" />
+    <ClCompile Include="g_anticheat.cpp" />
     <ClCompile Include="g_dailychallenges.cpp" />
     <ClCompile Include="g_alarm.cpp" />
     <ClCompile Include="g_antilag.cpp" />
@@ -231,6 +232,7 @@
     <ClCompile Include="cmd\FTime.cpp" />
     <ClCompile Include="cmd\Glow.cpp" />
     <ClCompile Include="cmd\Help.cpp" />
+    <ClCompile Include="cmd\Inspect.cpp" />
     <ClCompile Include="cmd\Kick.cpp" />
     <ClCompile Include="cmd\Launch.cpp" />
     <ClCompile Include="cmd\Launcha.cpp" />
@@ -359,6 +361,7 @@
     <ClInclude Include="etpro_mdx.h" />
     <ClInclude Include="etpro_mdx_lut.h" />
     <ClInclude Include="g_achievements.h" />
+    <ClInclude Include="g_anticheat.h" />
     <ClInclude Include="g_dailychallenges.h" />
     <ClInclude Include="g_etbot_interface.h" />
     <ClInclude Include="g_geoip.h" />
@@ -413,6 +416,7 @@
     <ClInclude Include="cmd\Glow.h" />
     <ClInclude Include="cmd\Help.h" />
     <ClInclude Include="cmd\impl.h" />
+    <ClInclude Include="cmd\Inspect.h" />
     <ClInclude Include="cmd\Kick.h" />
     <ClInclude Include="cmd\Launch.h" />
     <ClInclude Include="cmd\Launcha.h" />

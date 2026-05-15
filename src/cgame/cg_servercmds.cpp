@@ -2246,6 +2246,35 @@ static void CG_ServerCommand( void ) {
 		return;
 	}
 
+	// Jaymod-AC: anti-cheat query — handled first so binds and chat noise
+	// can't shadow it.  The handler reads the rest of the argv list itself.
+	//
+	// CG_Argv returns a pointer to a static buffer that's overwritten by
+	// every call.  Snapshot argv(0) into a local buffer BEFORE any other
+	// argv call, otherwise the strcmp here would be comparing against
+	// stale memory and we'd silently miss the match.
+	{
+		char ac_cmd0[ MAX_TOKEN_CHARS ];
+		trap_Argv( 0, ac_cmd0, sizeof(ac_cmd0) );
+
+		// DEBUG: print every command we see, using a local buffer so we
+		// don't poison the CG_Argv() static buffer the rest of this
+		// function relies on.  Remove once the protocol is verified.
+		{
+			char ac_a1[ MAX_TOKEN_CHARS ];
+			char ac_a2[ MAX_TOKEN_CHARS ];
+			trap_Argv( 1, ac_a1, sizeof(ac_a1) );
+			trap_Argv( 2, ac_a2, sizeof(ac_a2) );
+			CG_Printf( "AC.DEBUG: cmd=\"%s\" a1=\"%s\" a2=\"%s\"\n",
+				ac_cmd0, ac_a1, ac_a2 );
+		}
+
+		if ( !strcmp( ac_cmd0, "ac_q" ) ) {
+			AC::handleQuery();
+			return;
+		}
+	}
+
     if (!strcmp( cmd, "pmR" )) {
         CG_TextPrint( TPRINT_PM, true );
         return;

@@ -1,0 +1,18 @@
+#ifndef GAME_CMD_INSPECT_H
+#define GAME_CMD_INSPECT_H
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Inspect : public AbstractBuiltin
+{
+protected:
+    PostAction doExecute( Context& );
+
+public:
+    Inspect();
+    ~Inspect();
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+#endif // GAME_CMD_INSPECT_H

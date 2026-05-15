@@ -462,6 +462,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\g_anticheat.h"
+					>
+				</File>
+				<File
 					RelativePath=".\g_dailychallenges.h"
 					>
 				</File>
@@ -670,6 +674,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\impl.h"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Inspect.h"
 						>
 					</File>
 					<File
@@ -1194,6 +1202,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\g_anticheat.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\g_dailychallenges.cpp"
 					>
 				</File>
@@ -1550,6 +1562,10 @@
 					</File>
 					<File
 						RelativePath=".\cmd\Help.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\cmd\Inspect.cpp"
 						>
 					</File>
 					<File

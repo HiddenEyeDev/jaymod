@@ -4,6 +4,7 @@
 #include "g_achievements.h"
 #include "g_profile.h"
 #include "g_dailychallenges.h"
+#include "g_anticheat.h"
 
 level_locals_t	level;
 
@@ -208,6 +209,9 @@ vmCvar_t		g_geoipFile;
 vmCvar_t		g_welcomeBack;
 vmCvar_t		g_welcomeBackThreshold;
 vmCvar_t		g_repCooldown;
+vmCvar_t		g_acEnabled;
+vmCvar_t		g_acStrict;
+vmCvar_t		g_acTimeout;
 vmCvar_t		g_xpSave;
 vmCvar_t		g_xpSaveTimeout;
 vmCvar_t		g_xpMax;
@@ -381,6 +385,9 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_welcomeBack,		"g_welcomeBack",		"1",		CVAR_ARCHIVE },
 	{ &g_welcomeBackThreshold,"g_welcomeBackThreshold","1800",	CVAR_ARCHIVE },
 	{ &g_repCooldown,		"g_repCooldown",		"300",		CVAR_ARCHIVE },
+	{ &g_acEnabled,			"g_acEnabled",			"1",		CVAR_ARCHIVE },
+	{ &g_acStrict,			"g_acStrict",			"0",		CVAR_ARCHIVE },
+	{ &g_acTimeout,			"g_acTimeout",			"30000",	CVAR_ARCHIVE },
 	{ &g_killSpreeLevels,	"g_killSpreeLevels",	"",			0 },
 	{ &g_loseSpreeLevels,	"g_loseSpreeLevels",	"",			0 },
 
@@ -1838,6 +1845,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
     G_GeoIP_Init();
     Ach::onLevelInit();
     Daily::onLevelInit();
+    AC::onInit();
 
     // Load users databases
 	levelDB.load();
@@ -2252,6 +2260,7 @@ void G_ShutdownGame( int restart ) {
     molotov::shutdown();
     process.shutdown();
     G_GeoIP_Shutdown();
+    AC::onShutdown();
 
     if (cvars::g_shutdownExit.ivalue)
         exit( cvars::g_shutdownExit.ivalue );
@@ -3860,6 +3869,10 @@ Advances the non-player objects in the world
 */
 void G_RunFrame( int levelTime ) {
     stats::frame.sample( 1 );
+
+    // Jaymod-AC: schedule queries / time out unanswered ones.  Cheap; throttles
+    // internally so calling per-frame is fine.
+    AC::onTick();
 
     if (process.pendingReload) {
         // clear

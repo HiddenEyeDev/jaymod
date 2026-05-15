@@ -75,7 +75,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib iphlpapi.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib iphlpapi.lib psapi.lib"
 				OutputFile="../Release/cgame_mp_x86.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -172,7 +172,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib iphlpapi.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib iphlpapi.lib psapi.lib"
 				OutputFile="..\Debug/cgame_mp_x86.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -223,6 +223,10 @@
 				>
 				<File
 					RelativePath=".\CBulletVolume.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\cg_anticheat.cpp"
 					>
 				</File>
 				<File
@@ -663,6 +667,10 @@
 				>
 				<File
 					RelativePath=".\CBulletVolume.h"
+					>
+				</File>
+				<File
+					RelativePath=".\cg_anticheat.h"
 					>
 				</File>
 				<File

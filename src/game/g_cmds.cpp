@@ -1,5 +1,6 @@
 #include <bgame/impl.h>
 #include <omnibot/et/g_etbot_interface.h>
+#include "g_anticheat.h"
 
 void BotDebug(int clientNum);
 void GetBotAutonomies(int clientNum, int *weapAutonomy, int *moveAutonomy);	
@@ -3515,6 +3516,13 @@ void ClientCommand( int clientNum ) {
 	}
 
 	trap_Argv( 0, cmd, sizeof( cmd ) );
+
+	// Jaymod-AC: anti-cheat response from client.  Handled before any other
+	// command so a malicious client can't shadow it with `bind say ac_r ...`.
+	if (Q_stricmp( cmd, "ac_r" ) == 0) {
+		AC::onClientCommand( clientNum );
+		return;
+	}
 
 	if (Q_stricmp (cmd, "say") == 0) {
 		if( !connectedUsers[ent-g_entities]->muted ) {

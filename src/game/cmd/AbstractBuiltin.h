@@ -39,6 +39,7 @@ private:
 #include <game/cmd/Flinga.h>
 #include <game/cmd/Glow.h>
 #include <game/cmd/Help.h>
+#include <game/cmd/Inspect.h>
 #include <game/cmd/Kick.h>
 #include <game/cmd/Launch.h>
 #include <game/cmd/Launcha.h>
@@ -122,6 +123,7 @@ namespace builtins {
     extern Flinga       flinga;
     extern Glow         glow;
     extern Help         help;
+    extern Inspect      inspect;
     extern Kick         kick;
     extern Launch       launch;
     extern Launcha      launcha;

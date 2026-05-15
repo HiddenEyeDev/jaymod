@@ -204,6 +204,7 @@ namespace builtins {
     Flinga       flinga;
     Glow         glow;
     Help         help;
+    Inspect      inspect;
     Kick         kick;
     Launch       launch;
     Launcha      launcha;
